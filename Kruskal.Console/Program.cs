@@ -20,7 +20,7 @@ var graph = new Graph<string>(vertices, edges);
 
 foreach (var v in graph.Vertices)
     Console.WriteLine(v.Value);
-foreach (var e in graph.Edges.Distinct())
+foreach (var e in graph.EdgesDistinct.Distinct())
     Console.WriteLine($"({e.V1.Value}, {e.V2.Value}; {e.Weight})");
 Console.WriteLine($"Total Weight : {graph.TotalWeight}");
 
@@ -29,7 +29,7 @@ var (subgraph, history) = graph.Kruskal();
 Console.WriteLine("Minimum Spanning Tree Kruskal");
 foreach (var v in subgraph.Vertices)
     Console.WriteLine(v.Value);
-foreach (var e in subgraph.Edges)
+foreach (var e in subgraph.EdgesDistinct)
     Console.WriteLine($"({e.V1.Value}, {e.V2.Value}; {e.Weight})");
 Console.WriteLine($"Total Weight : {subgraph.TotalWeight}");
 

@@ -10,8 +10,11 @@ public class Graph<T> where T : IEquatable<T>
 
     public IReadOnlyList<Vertex<T>> Vertices => _vertices;
     public IReadOnlyList<IReadOnlyList<(Vertex<T> v, int weight)>> AdjencyList => _adjencyList;
+    public IReadOnlyList<Edge<T>> Edges => _vertices
+        .SelectMany((v, i) => _adjencyList[i].Select(adj => new Edge<T>(v, adj.v, adj.weight)))
+        .ToList();
 
-    public IReadOnlyList<Edge<T>> Edges
+    public IReadOnlyList<Edge<T>> EdgesDistinct
     {
         get
         {
@@ -34,7 +37,7 @@ public class Graph<T> where T : IEquatable<T>
         }
     }
 
-    public int TotalWeight => Edges.Aggregate(0, (acc, e) => acc + e.Weight);
+    public int TotalWeight => EdgesDistinct.Aggregate(0, (acc, e) => acc + e.Weight);
 
     public Graph(List<T> vertices, List<(T v1, T v2, int weight)> edges)
     {
@@ -112,7 +115,7 @@ public class Graph<T> where T : IEquatable<T>
 
     public void AddEdge(Edge<T> edge)
     {
-        if (Edges.Contains(edge))
+        if (EdgesDistinct.Contains(edge))
             throw new ArgumentException($"Sudah ada edge antara {edge.V1.Value} dan {edge.V2.Value}");
 
         if (edge.V1 == edge.V2)
@@ -142,7 +145,7 @@ public class Graph<T> where T : IEquatable<T>
 
     public bool RemoveEdge(Edge<T> edge)
     {
-        if (!Edges.Contains(edge)) return false;
+        if (!EdgesDistinct.Contains(edge)) return false;
 
         var indexV1 = _vertices.FindIndex(x => x == edge.V1);
         var indexV2 = _vertices.FindIndex(x => x == edge.V2);
@@ -205,7 +208,7 @@ public class Graph<T> where T : IEquatable<T>
     {
         var dus = new DisjointUnionSet<Vertex<T>>(_vertices);
 
-        foreach (var e in Edges)
+        foreach (var e in EdgesDistinct)
         {
             if (!dus.UnionByValue(e.V1, e.V2))
                 return true;
@@ -220,7 +223,7 @@ public class Graph<T> where T : IEquatable<T>
             throw new ArgumentOutOfRangeException("newEdge is invalid");
 
         var dus = new DisjointUnionSet<Vertex<T>>(_vertices);
-        var edges = Edges.Concat([newEdge]).ToList();
+        var edges = EdgesDistinct.Concat([newEdge]).ToList();
 
         foreach (var e in edges)
         {
@@ -295,13 +298,13 @@ public class Graph<T> where T : IEquatable<T>
         var subgraph = new Graph<T>(_vertices, []);
         var history = new List<(Graph<T> g, Edge<T>? bestEdge)> { (new(subgraph), null) };
 
-        while (subgraph.Edges.Count < _vertices.Count - 1)
+        while (subgraph.EdgesDistinct.Count < _vertices.Count - 1)
         {
             Edge<T>? bestEdge = null;
 
-            foreach (var edge in Edges)
+            foreach (var edge in EdgesDistinct)
             {
-                if (!subgraph.Edges.Contains(edge) && !subgraph.DetectCycleIfAddDFS(edge, edge.V1))
+                if (!subgraph.EdgesDistinct.Contains(edge) && !subgraph.DetectCycleIfAddDFS(edge, edge.V1))
                 {
                     if (bestEdge is null)
                         bestEdge = edge;

@@ -35,7 +35,7 @@ public static class GraphExtension
         }
 
         //Draw edges
-        foreach (var e in graph.Edges)
+        foreach (var e in graph.EdgesDistinct)
         {
             var v1 = graph.Vertices.FirstOrDefault(x => x == e.V1)!.Position;
             var v2 = graph.Vertices.FirstOrDefault(x => x == e.V2)!.Position;
