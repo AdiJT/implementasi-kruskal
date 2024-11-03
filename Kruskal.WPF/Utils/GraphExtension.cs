@@ -46,16 +46,11 @@ public static class GraphExtension
             var v2 = graph.Vertices.FirstOrDefault(x => x == e.V2)!.Position;
             var delta = (v1 - v2);
 
-            const float textOffset = 0.3f;
-            var textXOffset = delta.X / MathF.Abs(delta.X) * MathF.Abs(delta.X * textOffset);
-            var textYOffset = delta.Y / MathF.Abs(delta.Y) * MathF.Abs(delta.Y * textOffset);
-
             var lineOffset = vertexSize / 2 / delta.Length();
             var lineXOffset = delta.X / MathF.Abs(delta.X) * MathF.Abs(delta.X * lineOffset);
             var lineYOffset = delta.Y / MathF.Abs(delta.Y) * MathF.Abs(delta.Y * lineOffset);
 
             p.Color = colors[i];
-            b.Color = colors[i];
             g.DrawLine(
                 p, 
                 v1.X - lineXOffset, 
@@ -63,12 +58,34 @@ public static class GraphExtension
                 v2.X + lineXOffset, 
                 v2.Y + lineYOffset);
 
-            g.DrawString(
-                e.Weight.ToString(), f, b, 
-                v1.X - textXOffset, 
-                v1.Y - textYOffset);
-
             p.Color = defaultPenColor;
+        }
+
+        //Draw Weight
+        for (int i = 0; i < graph.EdgesDistinct.Count; i++)
+        {
+            var e = graph.EdgesDistinct[i];
+            var v1 = graph.Vertices.FirstOrDefault(x => x == e.V1)!.Position;
+            var v2 = graph.Vertices.FirstOrDefault(x => x == e.V2)!.Position;
+            var delta = (v1 - v2);
+
+            const float textOffset = 0.3f;
+            var textXOffset = delta.X / MathF.Abs(delta.X) * MathF.Abs(delta.X * textOffset);
+            var textYOffset = delta.Y / MathF.Abs(delta.Y) * MathF.Abs(delta.Y * textOffset);
+
+            b.Color = Color.White;
+            g.FillRectangle(
+                b,
+                v1.X - (textXOffset + 10),
+                v1.Y - (textYOffset + 10),
+                f.Size + 10, f.Size + 10);
+
+            b.Color = colors[i];
+            g.DrawString(
+                e.Weight.ToString(), f, b,
+                v1.X - (textXOffset + 10),
+                v1.Y - (textYOffset + 10));
+
             b.Color = defaultBrushColor;
         }
 
