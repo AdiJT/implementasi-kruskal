@@ -32,3 +32,9 @@ foreach (var v in subgraph.Vertices)
 foreach (var e in subgraph.Edges)
     Console.WriteLine($"({e.V1.Value}, {e.V2.Value}; {e.Weight})");
 Console.WriteLine($"Total Weight : {subgraph.TotalWeight}");
+
+graph.FruchtermanReingold(100, 100, 4);
+foreach (var v in graph.Vertices)
+{
+    Console.WriteLine(v.Position);
+}

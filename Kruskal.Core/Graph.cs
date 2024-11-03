@@ -227,13 +227,20 @@ public class Graph<T> where T : IEquatable<T>
     {
         var halfWidth = width / 2;
         int halfHeight = height / 2;
-        var temperature = new Vector2(width / 10, height / 10);
+        var temperature = (float)width/10;
         var area = width * height;
         var k = MathF.Sqrt(area / _vertices.Count);
+        var random = new Random();
 
         float fa(float x) => (x * x) / k;
         float fr(float x) => (k * k) / x;
-        Vector2 cool(Vector2 t) => t - new Vector2(width / 100, height / 100);
+        float cool(float t) => t - width/100;
+        
+        foreach (var e in _vertices)
+        {
+            e.Position = random.NextVector2(new Vector2(0, 0), new Vector2(width, height));
+            e.Disposition = Vector2.Zero;
+        }
 
         for (int i = 0; i < iterations; i++)
         {
@@ -254,12 +261,12 @@ public class Graph<T> where T : IEquatable<T>
             {
                 var delta = e.V1.Position - e.V2.Position;
                 e.V1.Disposition = e.V1.Disposition - (delta / delta.Length()) * fa(delta.Length());
-                e.V2.Disposition = e.V2.Disposition - (delta / delta.Length()) * fa(delta.Length());
+                e.V2.Disposition = e.V2.Disposition + (delta / delta.Length()) * fa(delta.Length());
             }
 
             foreach (var v in _vertices)
             {
-                v.Position = v.Position + (v.Disposition / v.Disposition.Length()) * Vector2.Min(v.Disposition, temperature);
+                v.Position = v.Position + (v.Disposition / v.Disposition.Length()) * MathF.Min(v.Disposition.Length(), temperature);
                 v.Position = new Vector2(
                     MathF.Min(halfWidth, MathF.Max(-halfWidth, v.Position.X)),
                     MathF.Min(halfHeight, MathF.Max(-halfHeight, v.Position.Y)));
