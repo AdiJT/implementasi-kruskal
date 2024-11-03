@@ -17,7 +17,7 @@ public static class GraphExtension
 
         var vertexSize = 12;
 
-        g.Clear(Color.White);
+        g.Clear(Color.Black);
 
         //Draw vertices
         foreach (var v in graph.Vertices)
