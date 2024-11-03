@@ -8,17 +8,21 @@
         Title="MainWindow" Height="450" Width="800" WindowState="Maximized">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="50" />
-            <RowDefinition Height="*" />
+            <RowDefinition Height="20*" />
+            <RowDefinition Height="90*" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"  />
         </Grid.ColumnDefinitions>
-        <StackPanel Grid.Row="0" Orientation="Horizontal">
+        <WrapPanel Grid.Row="0" Orientation="Horizontal">
             <TextBlock Margin="2, 5" VerticalAlignment="Center">Jumlah Vertex</TextBlock>
             <TextBox Name="TextBox_NumOfVertex" Margin="2, 5" VerticalAlignment="Center" Width="75" Text="4"/>
             <Button Click="Btn_Execute_Click" Name="Btn_Execute" HorizontalAlignment="Center" Margin="2, 10" Content="Generate Graph dan Eksekusi Kruskal" />
-        </StackPanel>
+            <TextBlock Margin="2, 5" VerticalAlignment="Center">Total Weight Original</TextBlock>
+            <TextBox Name="TextBox_TotalW" IsReadOnly="True" Margin="2, 5" VerticalAlignment="Center" Width="75" Text="0"/>
+            <TextBlock Margin="2, 5" VerticalAlignment="Center">Total Weight Minimum Spanning Tree</TextBlock>
+            <TextBox Name="TextBox_MSTW" IsReadOnly="True" Margin="2, 5" VerticalAlignment="Center" Width="75" Text="0"/>
+        </WrapPanel>
         <ScrollViewer VerticalScrollBarVisibility="Auto"  Grid.Row="1">
             <WrapPanel Name="WrapPanel_Result">
             </WrapPanel>

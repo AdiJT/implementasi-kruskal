@@ -50,6 +50,9 @@ namespace Kruskal.WPF
                     Margin = new Thickness(10)
                 });
             }
+
+            TextBox_TotalW.Text = graph.TotalWeight.ToString();
+            TextBox_MSTW.Text = result.TotalWeight.ToString();
         }
     }
 }
