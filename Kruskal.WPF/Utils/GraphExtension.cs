@@ -15,7 +15,7 @@ public static class GraphExtension
         using var b = new SolidBrush(Color.Green);
         using var f = new Font("Calibri", 14);
 
-        var vertexSize = 14;
+        var vertexSize = 23;
 
         g.Clear(Color.White);
 
@@ -37,13 +37,29 @@ public static class GraphExtension
         //Draw edges
         foreach (var e in graph.Edges)
         {
-            var v1 = graph.Vertices.FirstOrDefault(x => x == e.V1)!;
-            var v2 = graph.Vertices.FirstOrDefault(x => x == e.V2)!;
-            g.DrawLine(p, v1.Position.X, v1.Position.Y, v2.Position.X, v2.Position.Y);
-            var start = Vector2.Min(v1.Position, v2.Position);
-            var end = Vector2.Max(v1.Position, v2.Position);
-            var delta = end - start;
-            g.DrawString(e.Weight.ToString(), f, b, start.X + delta.X * 0.4f, start.Y + delta.Y * 0.3f);
+            var v1 = graph.Vertices.FirstOrDefault(x => x == e.V1)!.Position;
+            var v2 = graph.Vertices.FirstOrDefault(x => x == e.V2)!.Position;
+            var delta = (v1 - v2);
+
+            const float textOffset = 0.3f;
+            var textXOffset = delta.X / MathF.Abs(delta.X) * MathF.Abs(delta.X * textOffset);
+            var textYOffset = delta.Y / MathF.Abs(delta.Y) * MathF.Abs(delta.Y * textOffset);
+
+            var lineOffset = vertexSize / 2 / delta.Length();
+            var lineXOffset = delta.X / MathF.Abs(delta.X) * MathF.Abs(delta.X * lineOffset);
+            var lineYOffset = delta.Y / MathF.Abs(delta.Y) * MathF.Abs(delta.Y * lineOffset);
+
+            g.DrawLine(
+                p, 
+                v1.X - lineXOffset, 
+                v1.Y - lineYOffset, 
+                v2.X + lineXOffset, 
+                v2.Y + lineYOffset);
+
+            g.DrawString(
+                e.Weight.ToString(), f, b, 
+                v1.X - textXOffset, 
+                v1.Y - textYOffset);
         }
 
         return bitmap;

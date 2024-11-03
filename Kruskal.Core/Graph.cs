@@ -333,7 +333,7 @@ public class Graph<T> where T : IEquatable<T>
             foreach (var u in vertices)
                 if (u != v)
                 {
-                    edges.Add((v, u, random.Next(1, 100)));
+                    edges.Add((v, u, random.Next(1, 50)));
                 }
 
         return new Graph<int>(vertices, edges);
