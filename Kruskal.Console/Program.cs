@@ -37,10 +37,15 @@ Console.WriteLine("\nEdge Terbaik tiap Iterasi");
 for(int i = 0; i < history.Count; i++)
 {
     var be = history[i].bestEdge;
-    Console.WriteLine($"Iterasi {i + 1}");
+    Console.WriteLine($"Iterasi {i}");
     if(be is null)
         Console.WriteLine("Tidak Ada");
     else
         Console.WriteLine($"({be.V1.Value}, {be.V2.Value}; {be.Weight})");
+}
 
+graph.FruchtermanReingold(100, 100);
+foreach (var v in graph.Vertices)
+{
+    Console.WriteLine(v.Position);
 }

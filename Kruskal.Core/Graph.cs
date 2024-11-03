@@ -11,7 +11,7 @@ public class Graph<T> where T : IEquatable<T>
     public IReadOnlyList<Vertex<T>> Vertices => _vertices;
     public IReadOnlyList<IReadOnlyList<(Vertex<T> v, int weight)>> AdjencyList => _adjencyList;
 
-    public IReadOnlyList<Edge<T>> Edges 
+    public IReadOnlyList<Edge<T>> Edges
     {
         get
         {
@@ -22,7 +22,7 @@ public class Graph<T> where T : IEquatable<T>
 
             var result = new List<Edge<T>>();
 
-            foreach ( var edge in edges)
+            foreach (var edge in edges)
             {
                 if (!result.Contains(edge))
                 {
@@ -193,6 +193,14 @@ public class Graph<T> where T : IEquatable<T>
         return false;
     }
 
+    public bool DetectCycleIfAddDFS(Edge<T> newEdge, Vertex<T>? start = null)
+    {
+        AddEdge(newEdge);
+        var result = DetectCycleDFS(start);
+        RemoveEdge(newEdge);
+        return result;
+    }
+
     public bool DetectCycleDUS()
     {
         var dus = new DisjointUnionSet<Vertex<T>>(_vertices);
@@ -226,16 +234,16 @@ public class Graph<T> where T : IEquatable<T>
     public void FruchtermanReingold(int width, int height, int iterations = 100)
     {
         var halfWidth = width / 2;
-        int halfHeight = height / 2;
-        var temperature = (float)width/10;
+        var halfHeight = height / 2;
+        var temperature = (float)width / 10;
         var area = width * height;
         var k = MathF.Sqrt(area / _vertices.Count);
         var random = new Random();
 
         float fa(float x) => (x * x) / k;
-        float fr(float x) => (k * k) / x;
-        float cool(float t) => t - width/100;
-        
+        float fr(float x) => (k * k) / (x + 0.0000001f);
+        float cool(float t) => t - width / (10 * iterations);
+
         foreach (var e in _vertices)
         {
             e.Position = random.NextVector2(new Vector2(0, 0), new Vector2(width, height));
@@ -252,24 +260,30 @@ public class Graph<T> where T : IEquatable<T>
                     if (u != v)
                     {
                         var delta = v.Position - u.Position;
-                        v.Disposition = v.Disposition + (delta / delta.Length()) * fr(delta.Length());
+                        v.Disposition = v.Disposition + (delta / (delta.Length() + (float)0.0000001)) * fr(delta.Length());
                     }
                 }
             }
 
             foreach (var e in Edges)
             {
-                var delta = e.V1.Position - e.V2.Position;
-                e.V1.Disposition = e.V1.Disposition - (delta / delta.Length()) * fa(delta.Length());
-                e.V2.Disposition = e.V2.Disposition + (delta / delta.Length()) * fa(delta.Length());
+                var v1 = _vertices.Find(v => v == e.V1)!;
+                var v2 = _vertices.Find(v => v == e.V2)!;
+                var delta = v1.Position - v2.Position;
+                v1.Disposition = v1.Disposition - (delta / (delta.Length() + (float)0.0000001)) * fa(delta.Length());
+                v2.Disposition = v2.Disposition + (delta / (delta.Length() + (float)0.0000001)) * fa(delta.Length());
             }
 
             foreach (var v in _vertices)
             {
-                v.Position = v.Position + (v.Disposition / v.Disposition.Length()) * MathF.Min(v.Disposition.Length(), temperature);
+                v.Position =
+                    v.Position +
+                    (v.Disposition / (v.Disposition.Length() + (float)0.0000001)) *
+                    MathF.Min(v.Disposition.Length(), temperature);
+
                 v.Position = new Vector2(
-                    MathF.Min(halfWidth, MathF.Max(-halfWidth, v.Position.X)),
-                    MathF.Min(halfHeight, MathF.Max(-halfHeight, v.Position.Y)));
+                    MathF.Min(width, MathF.Max(0, v.Position.X)),
+                    MathF.Min(height, MathF.Max(0, v.Position.Y)));
             }
 
             temperature = cool(temperature);
@@ -281,15 +295,15 @@ public class Graph<T> where T : IEquatable<T>
         var subgraph = new Graph<T>(_vertices, []);
         var history = new List<(Graph<T> g, Edge<T>? bestEdge)> { (new(subgraph), null) };
 
-        while(subgraph.Edges.Count < _vertices.Count - 1)
+        while (subgraph.Edges.Count < _vertices.Count - 1)
         {
             Edge<T>? bestEdge = null;
 
             foreach (var edge in Edges)
             {
-                if(!subgraph.Edges.Contains(edge) && !subgraph.DetectCycleIfAddDUS(edge))
+                if (!subgraph.Edges.Contains(edge) && !subgraph.DetectCycleIfAddDFS(edge, edge.V1))
                 {
-                    if(bestEdge is null)
+                    if (bestEdge is null)
                         bestEdge = edge;
                     else
                     {
@@ -305,73 +319,23 @@ public class Graph<T> where T : IEquatable<T>
 
         return (subgraph, history);
     }
-}
 
-public class Edge<T> : IEquatable<Edge<T>>
-    where T : IEquatable<T>
-{
-    public Vertex<T> V1 { get; set; }
-    public Vertex<T> V2 { get; set; }
-    public int Weight { get; set; }
-
-    public Edge(Vertex<T> v1, Vertex<T> v2, int weight)
+    public static Graph<int> GenerateCompleteGraph(int numOfVertex)
     {
-        V1 = v1;
-        V2 = v2;
-        Weight = weight;
+        if (numOfVertex <= 0)
+            throw new ArgumentException("numOfVertex is zero or negative");
+
+        var random = new Random();
+        var vertices = Enumerable.Range(1, numOfVertex).ToList();
+        var edges = new List<(int, int, int)>();
+
+        foreach (var v in vertices)
+            foreach (var u in vertices)
+                if (u != v)
+                {
+                    edges.Add((v, u, random.Next(1, 100)));
+                }
+
+        return new Graph<int>(vertices, edges);
     }
-
-    public Edge(T v1, T v2, int weight)
-    {
-        V1 = new Vertex<T>(v1);
-        V2 = new Vertex<T>(v2);
-        Weight = weight;
-    }
-
-    public override bool Equals(object? obj) =>
-        obj is not null &&
-        obj is Edge<T> other &&
-        ((other.V1 == V1 && other.V2 == V2) ||
-        (other.V1 == V2 && other.V2 == V1));
-
-    public bool Equals(Edge<T>? other) =>
-        other is not null &&
-        ((other.V1 == V1 && other.V2 == V2) ||
-        (other.V1 == V2 && other.V2 == V1));
-
-    public override int GetHashCode() => HashCode.Combine(V1, V2);
-
-    public static bool operator ==(Edge<T>? left, Edge<T>? right) => left is not null && left.Equals(right);
-
-    public static bool operator !=(Edge<T>? left, Edge<T>? right) => !(left == right);
-}
-
-public class Vertex<T> : IEquatable<Vertex<T>>
-    where T : IEquatable<T>
-{
-    public T Value { get; set; }
-    public Vector2 Position { get; set; } = Vector2.Zero;
-    public Vector2 Disposition { get; set; } = Vector2.Zero;
-
-    public Vertex(T value)
-    {
-        Value = value;
-    }
-
-    public Vertex(T value, Vector2 position, Vector2 disposition)
-    {
-        Value = value;
-        Position = position;
-        Disposition = disposition;
-    }
-
-    public override bool Equals(object? obj) => obj is not null && obj is Vertex<T> vrt && vrt.Value.Equals(Value);
-
-    public bool Equals(Vertex<T>? other) => other is not null && other.Value.Equals(Value);
-
-    public override int GetHashCode() => Value.GetHashCode();
-
-    public static bool operator ==(Vertex<T>? left, Vertex<T>? right) => left is not null && left.Equals(right);
-
-    public static bool operator !=(Vertex<T>? left, Vertex<T>? right) => !(left == right);
 }

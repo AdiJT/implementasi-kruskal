@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.35122.118
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kruskal.Core", "Kruskal.Core\Kruskal.Core.csproj", "{22781BAC-0D96-45C7-BDAD-328403492AC5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kruskal.Core", "Kruskal.Core\Kruskal.Core.csproj", "{22781BAC-0D96-45C7-BDAD-328403492AC5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kruskal.Console", "Kruskal.Console\Kruskal.Console.csproj", "{5495ADE7-8504-45A6-AF3B-E7B52627CB99}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kruskal.Console", "Kruskal.Console\Kruskal.Console.csproj", "{5495ADE7-8504-45A6-AF3B-E7B52627CB99}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kruskal.WPF", "Kruskal.WPF\Kruskal.WPF.csproj", "{1AE1FBAE-D263-484F-BC70-BBF231B6C04A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{5495ADE7-8504-45A6-AF3B-E7B52627CB99}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5495ADE7-8504-45A6-AF3B-E7B52627CB99}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5495ADE7-8504-45A6-AF3B-E7B52627CB99}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1AE1FBAE-D263-484F-BC70-BBF231B6C04A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1AE1FBAE-D263-484F-BC70-BBF231B6C04A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1AE1FBAE-D263-484F-BC70-BBF231B6C04A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1AE1FBAE-D263-484F-BC70-BBF231B6C04A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
