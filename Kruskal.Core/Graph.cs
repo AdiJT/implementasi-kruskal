@@ -276,10 +276,10 @@ public class Graph<T> where T : IEquatable<T>
         }
     }
 
-    public (Graph<T> subgraph, List<Graph<T>> history) Kruskal()
+    public (Graph<T> subgraph, List<(Graph<T> g, Edge<T>? bestEdge)> history) Kruskal()
     {
         var subgraph = new Graph<T>(_vertices, []);
-        var history = new List<Graph<T>> { new(subgraph) };
+        var history = new List<(Graph<T> g, Edge<T>? bestEdge)> { (new(subgraph), null) };
 
         while(subgraph.Edges.Count < _vertices.Count - 1)
         {
@@ -300,7 +300,7 @@ public class Graph<T> where T : IEquatable<T>
             }
             subgraph.AddEdge(bestEdge!);
 
-            history.Add(new Graph<T>(subgraph));
+            history.Add((new Graph<T>(subgraph), bestEdge));
         }
 
         return (subgraph, history);
