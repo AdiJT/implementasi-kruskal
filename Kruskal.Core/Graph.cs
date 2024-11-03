@@ -165,7 +165,7 @@ public class Graph<T> where T : IEquatable<T>
         return _adjencyList[index].Select(adj => adj.v).ToList();
     }
 
-    public bool DetectCycle(Vertex<T>? start = null)
+    public bool DetectCycleDFS(Vertex<T>? start = null)
     {
         if (start == null)
             start = Vertices[0];
@@ -188,6 +188,36 @@ public class Graph<T> where T : IEquatable<T>
             foreach (var n in neighbor)
                 if (n != parent)
                     queue.Enqueue((n, v));
+        }
+
+        return false;
+    }
+
+    public bool DetectCycleDUS()
+    {
+        var dus = new DisjointUnionSet<Vertex<T>>(_vertices);
+
+        foreach (var e in Edges)
+        {
+            if (!dus.UnionByValue(e.V1, e.V2))
+                return true;
+        }
+
+        return false;
+    }
+
+    public bool DetectCycleIfAddDUS(Edge<T> newEdge)
+    {
+        if (!_vertices.Contains(newEdge.V1) || !_vertices.Contains(newEdge.V2))
+            throw new ArgumentOutOfRangeException("newEdge is invalid");
+
+        var dus = new DisjointUnionSet<Vertex<T>>(_vertices);
+        var edges = Edges.Concat([newEdge]).ToList();
+
+        foreach (var e in edges)
+        {
+            if (!dus.UnionByValue(e.V1, e.V2))
+                return true;
         }
 
         return false;
@@ -246,24 +276,22 @@ public class Graph<T> where T : IEquatable<T>
 
         while(subgraph.Edges.Count < _vertices.Count - 1)
         {
-            var validEdges = new List<Edge<T>>();
+            Edge<T>? bestEdge = null;
+
             foreach (var edge in Edges)
             {
-                if (subgraph.Edges.Contains(edge))
-                    continue;
-
-                subgraph.AddEdge(edge);
-                var isCyclic = subgraph.DetectCycle(edge.V1);
-                subgraph.RemoveEdge(edge);
-
-                if (isCyclic)
-                    continue;
-
-                validEdges.Add(edge);
+                if(!subgraph.Edges.Contains(edge) && !subgraph.DetectCycleIfAddDUS(edge))
+                {
+                    if(bestEdge is null)
+                        bestEdge = edge;
+                    else
+                    {
+                        if (edge.Weight < bestEdge.Weight)
+                            bestEdge = edge;
+                    }
+                }
             }
-
-            var minimumEdge = validEdges.MinBy(e => e.Weight);
-            subgraph.AddEdge(minimumEdge!);
+            subgraph.AddEdge(bestEdge!);
 
             history.Add(new Graph<T>(subgraph));
         }
