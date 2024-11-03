@@ -11,11 +11,11 @@ public static class GraphExtension
     {
         var bitmap = new Bitmap(width, height);
         using var g = Graphics.FromImage(bitmap);
-        using var p = new Pen(Color.Black, 1);
+        using var p = new Pen(Color.Black, 2);
         using var b = new SolidBrush(Color.Green);
-        using var f = new Font("Calibri", 10);
+        using var f = new Font("Calibri", 14);
 
-        var vertexSize = 12;
+        var vertexSize = 14;
 
         g.Clear(Color.White);
 
@@ -43,7 +43,7 @@ public static class GraphExtension
             var start = Vector2.Min(v1.Position, v2.Position);
             var end = Vector2.Max(v1.Position, v2.Position);
             var delta = end - start;
-            g.DrawString(e.Weight.ToString(), f, b, start.X + delta.X / 2, start.Y + delta.Y / 2);
+            g.DrawString(e.Weight.ToString(), f, b, start.X + delta.X * 0.4f, start.Y + delta.Y * 0.3f);
         }
 
         return bitmap;

@@ -28,8 +28,8 @@ namespace Kruskal.WPF
         private void Btn_Execute_Click(object sender, RoutedEventArgs e)
         {
             var graph = Graph<int>.GenerateCompleteGraph(int.Parse(TextBox_NumOfVertex.Text));
-            const int size = 200;
-            graph.FruchtermanReingold(size, size, 1000);
+            const int size = 400;
+            graph.FruchtermanReingold(size, size, 10000);
 
             var (result, history) = graph.Kruskal();
 
@@ -37,7 +37,7 @@ namespace Kruskal.WPF
             WrapPanel_Result.Children.Add(new Image
             {
                 Source = graph.ToBitmap(size, size).ToWpfBitmap(),
-                Height = 300,
+                Height = 400,
                 Margin = new Thickness(10)
             });
 
@@ -46,7 +46,7 @@ namespace Kruskal.WPF
                 WrapPanel_Result.Children.Add(new Image
                 {
                     Source = g.ToBitmap(size, size).ToWpfBitmap(),
-                    Height = 300,
+                    Height = 400,
                     Margin = new Thickness(10)
                 });
             }
