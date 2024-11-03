@@ -9,11 +9,15 @@ public static class GraphExtension
     public static Bitmap ToBitmap<T>(this Graph<T> graph, int width, int height)
         where T : IEquatable<T>
     {
+        var defaultPenColor = Color.Black;
+        var defaultBrushColor = Color.Green;
         var bitmap = new Bitmap(width, height);
         using var g = Graphics.FromImage(bitmap);
-        using var p = new Pen(Color.Black, 2);
-        using var b = new SolidBrush(Color.Green);
+        using var p = new Pen(defaultPenColor, 2);
+        using var b = new SolidBrush(defaultBrushColor);
         using var f = new Font("Calibri", 14);
+
+        var colors = new Random().RandomColors(graph.Edges.Count, [defaultPenColor, defaultBrushColor, Color.White]);
 
         var vertexSize = 23;
 
@@ -35,8 +39,9 @@ public static class GraphExtension
         }
 
         //Draw edges
-        foreach (var e in graph.EdgesDistinct)
+        for(int i = 0; i < graph.EdgesDistinct.Count; i++)
         {
+            var e = graph.EdgesDistinct[i];
             var v1 = graph.Vertices.FirstOrDefault(x => x == e.V1)!.Position;
             var v2 = graph.Vertices.FirstOrDefault(x => x == e.V2)!.Position;
             var delta = (v1 - v2);
@@ -49,6 +54,8 @@ public static class GraphExtension
             var lineXOffset = delta.X / MathF.Abs(delta.X) * MathF.Abs(delta.X * lineOffset);
             var lineYOffset = delta.Y / MathF.Abs(delta.Y) * MathF.Abs(delta.Y * lineOffset);
 
+            p.Color = colors[i];
+            b.Color = colors[i];
             g.DrawLine(
                 p, 
                 v1.X - lineXOffset, 
@@ -60,6 +67,9 @@ public static class GraphExtension
                 e.Weight.ToString(), f, b, 
                 v1.X - textXOffset, 
                 v1.Y - textYOffset);
+
+            p.Color = defaultPenColor;
+            b.Color = defaultBrushColor;
         }
 
         return bitmap;
