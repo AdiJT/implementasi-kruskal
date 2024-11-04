@@ -293,6 +293,16 @@ public class Graph<T> where T : IEquatable<T>
         }
     }
 
+    public int Degree(Vertex<T> vertex)
+    {
+        var index = _vertices.IndexOf(vertex);
+
+        if (index == -1)
+            throw new ArgumentException("");
+
+        return _adjencyList[index].Count;
+    }
+
     public (Graph<T> subgraph, List<(Graph<T> g, Edge<T>? bestEdge)> history) Kruskal()
     {
         var subgraph = new Graph<T>(_vertices, []);
@@ -343,5 +353,40 @@ public static class Graph
                 }
 
         return new Graph<int>(vertices, edges);
+    }
+
+    public static Graph<int> GenerateRandomGraph(int numOfVertex, int degree)
+    {
+        if (numOfVertex <= 0)
+            throw new ArgumentException("numOfVertex is zero or negative");
+
+        if (degree <= 0)
+            throw new ArgumentException("degree is zero or negative");
+
+        var random = new Random();
+        var vertices = Enumerable.Range(1, numOfVertex).ToList();
+        var graph = new Graph<int>(vertices, []);
+
+        foreach(var v in graph.Vertices)
+        {
+            foreach (var u in graph.Vertices)
+            {
+                if (v != u && graph.Degree(v) < degree && graph.Degree(u) < degree)
+                {
+                    var edge = new Edge<int>(v, u, random.Next(1, 50));
+                    if(!graph.Edges.Contains(edge))
+                    {
+                        graph.AddEdge(edge);
+                    }
+                }
+            }
+        }
+
+        foreach (var v in graph.Vertices)
+        {
+            
+        }
+
+        return graph;
     }
 }

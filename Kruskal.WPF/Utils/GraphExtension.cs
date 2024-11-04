@@ -91,7 +91,7 @@ public static class GraphExtension
 
         //Draw Title
         b.Color = Color.White;
-        g.FillRectangle(b, 0, 0, width, 100);
+        g.FillRectangle(b, 0, 0, width, 50);
 
         b.Color = defaultBrushColor;
         using var f1 = new Font("Calibri", 30);
