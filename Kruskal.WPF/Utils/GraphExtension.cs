@@ -53,9 +53,9 @@ public static class GraphExtension
             p.Color = colors[i];
             g.DrawLine(
                 p, 
-                v1.X - lineXOffset, 
-                v1.Y - lineYOffset, 
-                v2.X + lineXOffset, 
+                v1.X - lineXOffset,
+                v1.Y - lineYOffset,
+                v2.X + lineXOffset,
                 v2.Y + lineYOffset);
 
             p.Color = defaultPenColor;
@@ -76,15 +76,15 @@ public static class GraphExtension
             b.Color = Color.White;
             g.FillRectangle(
                 b,
-                v1.X - (textXOffset + 10),
-                v1.Y - (textYOffset + 10),
+                Math.Max(Math.Min(v1.X - (textXOffset + 10), width - f.Size), 0),
+                Math.Max(Math.Min(v1.Y - (textYOffset + 10), height - f.Size), 0),
                 f.Size + 10, f.Size + 10);
 
             b.Color = colors[i];
             g.DrawString(
                 e.Weight.ToString(), f, b,
-                v1.X - (textXOffset + 10),
-                v1.Y - (textYOffset + 10));
+                Math.Max(Math.Min(v1.X - (textXOffset + 10), width - f.Size), 0),
+                Math.Max(Math.Min(v1.Y - (textYOffset + 10), height - f.Size), 0));
 
             b.Color = defaultBrushColor;
         }

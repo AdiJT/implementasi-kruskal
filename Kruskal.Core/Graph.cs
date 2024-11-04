@@ -170,36 +170,11 @@ public class Graph<T> where T : IEquatable<T>
         return false;
     }
 
-    public bool DetectCycleIfAddDFS(Edge<T> newEdge, Vertex<T>? start = null)
-    {
-        AddEdge(newEdge);
-        var result = DetectCycleDFS(start);
-        RemoveEdge(newEdge);
-        return result;
-    }
-
     public bool DetectCycleDUS()
     {
         var dus = new DisjointUnionSet<Vertex<T>>(_vertices);
 
         foreach (var e in EdgesDistinct)
-        {
-            if (!dus.UnionByValue(e.V1, e.V2))
-                return true;
-        }
-
-        return false;
-    }
-
-    public bool DetectCycleIfAddDUS(Edge<T> newEdge)
-    {
-        if (!_vertices.Contains(newEdge.V1) || !_vertices.Contains(newEdge.V2))
-            throw new ArgumentOutOfRangeException("newEdge is invalid");
-
-        var dus = new DisjointUnionSet<Vertex<T>>(_vertices);
-        var edges = EdgesDistinct.Concat([newEdge]).ToList();
-
-        foreach (var e in edges)
         {
             if (!dus.UnionByValue(e.V1, e.V2))
                 return true;
@@ -281,6 +256,7 @@ public class Graph<T> where T : IEquatable<T>
     {
         var subgraph = new Graph<T>(_vertices, []);
         var history = new List<(Graph<T> g, Edge<T>? bestEdge)> { (new(subgraph), null) };
+        var dus = new DisjointUnionSet<Vertex<T>>(_vertices);
 
         while (subgraph.EdgesDistinct.Count < _vertices.Count - 1)
         {
@@ -288,7 +264,7 @@ public class Graph<T> where T : IEquatable<T>
 
             foreach (var edge in EdgesDistinct)
             {
-                if (!subgraph.EdgesDistinct.Contains(edge) && !subgraph.DetectCycleIfAddDFS(edge, edge.V1))
+                if (!subgraph.EdgesDistinct.Contains(edge) && dus.FindByValue(edge.V1) != dus.FindByValue(edge.V2))
                 {
                     if (bestEdge is null)
                         bestEdge = edge;
@@ -302,6 +278,7 @@ public class Graph<T> where T : IEquatable<T>
             subgraph.AddEdge(bestEdge!);
 
             history.Add((new Graph<T>(subgraph), bestEdge));
+            dus.UnionByValue(bestEdge!.V1, bestEdge!.V2);
         }
 
         return (subgraph, history);

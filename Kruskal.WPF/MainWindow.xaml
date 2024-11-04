@@ -18,6 +18,9 @@
         <WrapPanel Grid.Row="0" Orientation="Horizontal">
             <TextBlock Margin="2, 5" VerticalAlignment="Center">Jumlah Vertex</TextBlock>
             <TextBox x:Name="TextBox_NumOfVertex" Margin="2, 5" VerticalAlignment="Center" Width="75" Text="4"/>
+            
+            <TextBlock Margin="2, 5" VerticalAlignment="Center">Degree</TextBlock>
+            <TextBox x:Name="TextBox_NumOfDegree" Margin="2, 5" VerticalAlignment="Center" Width="75" Text="5"/>
 
             <Button Click="Btn_Execute_Click" x:Name="Btn_Execute" HorizontalAlignment="Center" Margin="2, 10" Content="Generate Graph dan Eksekusi Kruskal" />
 
