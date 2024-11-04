@@ -6,7 +6,7 @@ namespace Kruskal.WPF.Utils;
 
 public static class GraphExtension
 {
-    public static Bitmap ToBitmap<T>(this Graph<T> graph, int width, int height)
+    public static Bitmap ToBitmap<T>(this Graph<T> graph, int width, int height, string title)
         where T : IEquatable<T>
     {
         var defaultPenColor = Color.Black;
@@ -88,6 +88,14 @@ public static class GraphExtension
 
             b.Color = defaultBrushColor;
         }
+
+        //Draw Title
+        b.Color = Color.White;
+        g.FillRectangle(b, 0, 0, width, 100);
+
+        b.Color = defaultBrushColor;
+        using var f1 = new Font("Calibri", 24);
+        g.DrawString(title, f, b, 10, 10);
 
         return bitmap;
     }

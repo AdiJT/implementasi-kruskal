@@ -1,6 +1,5 @@
 ﻿using Kruskal.Core;
 using Kruskal.WPF.Utils;
-using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -31,7 +30,7 @@ namespace Kruskal.WPF
 
             var result = await Task.Run(() =>
             {
-                var graph = Graph<int>.GenerateCompleteGraph(numOfVertex);
+                var graph = Graph.GenerateCompleteGraph(numOfVertex);
                 var size = 700;
                 graph.FruchtermanReingold(size, size);
                 progress.Report(25);
@@ -39,10 +38,13 @@ namespace Kruskal.WPF
                 var (result, history) = graph.Kruskal();
                 progress.Report(25);
 
-                var bitmapSources = new List<BitmapSource> { graph.ToBitmap(size, size).ToWpfBitmap() };
-                foreach (var (g, _) in history)
+                var bitmapSources = new List<BitmapSource> 
+                { 
+                    graph.ToBitmap(size, size, "Graph Asli").ToWpfBitmap() 
+                };
+                foreach (var (g, be) in history)
                 {
-                    bitmapSources.Add(g.ToBitmap(size, size).ToWpfBitmap());
+                    bitmapSources.Add(g.ToBitmap(size, size, be is null ? "Iterasi 0" : $"Tambah Sisi ({be.V1.Value}, {be.V2.Value}; {be.Weight})").ToWpfBitmap());
                     progress.Report(50 * (1 / history.Count));
                 }
 
@@ -90,7 +92,7 @@ namespace Kruskal.WPF
 
         private void Btn_ExecuteF_Click(object sender, RoutedEventArgs e)
         {
-            var graph = Graph<int>.GenerateCompleteGraph(int.Parse(TextBox_NumOfVertex.Text.Trim()));
+            var graph = Graph.GenerateCompleteGraph(int.Parse(TextBox_NumOfVertex.Text.Trim()));
 
             var iterasi = 100;
 
@@ -103,7 +105,7 @@ namespace Kruskal.WPF
                 WrapPanel_Result.Children.Add(new Image()
                 {
                     Height = 300,
-                    Source = graph.ToBitmap(10000, 10000).ToWpfBitmap()
+                    Source = graph.ToBitmap(10000, 10000, $"Iterasi {i + 1}").ToWpfBitmap()
                 });
             }
         }

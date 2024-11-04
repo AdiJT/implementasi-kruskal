@@ -322,7 +322,10 @@ public class Graph<T> where T : IEquatable<T>
 
         return (subgraph, history);
     }
+}
 
+public static class Graph
+{
     public static Graph<int> GenerateCompleteGraph(int numOfVertex)
     {
         if (numOfVertex <= 0)
