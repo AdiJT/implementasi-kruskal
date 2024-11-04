@@ -94,7 +94,7 @@ public static class GraphExtension
         g.FillRectangle(b, 0, 0, width, 100);
 
         b.Color = defaultBrushColor;
-        using var f1 = new Font("Calibri", 24);
+        using var f1 = new Font("Calibri", 30);
         g.DrawString(title, f, b, 10, 10);
 
         return bitmap;

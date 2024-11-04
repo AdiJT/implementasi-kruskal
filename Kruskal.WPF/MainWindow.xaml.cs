@@ -44,7 +44,7 @@ namespace Kruskal.WPF
                 };
                 foreach (var (g, be) in history)
                 {
-                    bitmapSources.Add(g.ToBitmap(size, size, be is null ? "Iterasi 0" : $"Tambah Sisi ({be.V1.Value}, {be.V2.Value}; {be.Weight})").ToWpfBitmap());
+                    bitmapSources.Add(g.ToBitmap(size, size, be is null ? "Iterasi 0" : $"Tambah Sisi ({be.V1.Value}, {be.V2.Value}) dengan bobot {be.Weight}").ToWpfBitmap());
                     progress.Report(50 * (1 / history.Count));
                 }
 
