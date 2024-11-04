@@ -12,7 +12,7 @@ public class Graph<T> where T : IEquatable<T>
     public IReadOnlyList<IReadOnlyList<(Vertex<T> v, int weight)>> AdjencyList => _adjencyList;
     public IReadOnlyList<Edge<T>> Edges => _vertices
         .SelectMany((v, i) => _adjencyList[i].Select(adj => new Edge<T>(v, adj.v, adj.weight)))
-        .ToList();
+         .ToList();
 
     public IReadOnlyList<Edge<T>> EdgesDistinct
     {
@@ -41,7 +41,7 @@ public class Graph<T> where T : IEquatable<T>
 
     public Graph(List<T> vertices, List<(T v1, T v2, int weight)> edges)
         : this(vertices.Select(v => new Vertex<T>(v)).ToList(), edges.Select(e => new Edge<T>(e.v1, e.v2, e.weight)).ToList())
-    { 
+    {
     }
 
     public Graph(List<Vertex<T>> vertices, List<Edge<T>> edges)
@@ -310,7 +310,7 @@ public class Graph<T> where T : IEquatable<T>
 
 public static class Graph
 {
-    public static Graph<int> GenerateCompleteGraph(int numOfVertex)
+    public static Graph<int> CompleteGraph(int numOfVertex)
     {
         if (numOfVertex <= 0)
             throw new ArgumentException("numOfVertex is zero or negative");
@@ -329,37 +329,48 @@ public static class Graph
         return new Graph<int>(vertices, edges);
     }
 
-    public static Graph<int> GenerateRandomGraph(int numOfVertex, int degree)
+    public static Graph<int> RandomGraph(int numOfVertex, int degree)
     {
         if (numOfVertex <= 0)
             throw new ArgumentException("numOfVertex is zero or negative");
 
-        if (degree <= 0)
-            throw new ArgumentException("degree is zero or negative");
+        degree = Math.Min(degree, numOfVertex - 1);
 
         var random = new Random();
         var vertices = Enumerable.Range(1, numOfVertex).ToList();
         var graph = new Graph<int>(vertices, []);
+        var edgesAdded = 0;
 
-        foreach(var v in graph.Vertices)
+        for (int i = 0; i < numOfVertex; i++)
         {
-            foreach (var u in graph.Vertices)
+            graph.AddEdge(new Edge<int>(
+                graph.Vertices[i], 
+                graph.Vertices[i == numOfVertex - 1 ? 0 : i + 1], 
+                random.Next(1, 50)));
+
+            edgesAdded++;
+        }
+
+        var additionalEdge = Math.Min(edgesAdded + degree * (degree - 1)/2, numOfVertex * (numOfVertex - 1) / 2);
+        while(edgesAdded < additionalEdge)
+        {
+            var i = random.Next(0, numOfVertex);
+            var j = random.Next(0, numOfVertex);
+
+            var v1 = graph.Vertices[i];
+            var v2 = graph.Vertices[j];
+
+            if(v1 != v2)
             {
-                if (v != u && graph.Degree(v) < degree && graph.Degree(u) < degree)
+                var edge = new Edge<int>(v1, v2, random.Next(1, 50));
+                if(!graph.Edges.Contains(edge))
                 {
-                    var edge = new Edge<int>(v, u, random.Next(1, 50));
-                    if(!graph.Edges.Contains(edge))
-                    {
-                        graph.AddEdge(edge);
-                    }
+                    graph.AddEdge(edge);
+                    edgesAdded++;
                 }
             }
         }
 
-        foreach (var v in graph.Vertices)
-        {
-            
-        }
 
         return graph;
     }

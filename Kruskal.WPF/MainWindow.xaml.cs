@@ -29,22 +29,24 @@ namespace Kruskal.WPF
 
             var result = await Task.Run(() =>
             {
-                var graph = new Graph<int>(
-                    [0, 1, 2, 3, 4, 5, 6,],
-                    [
-                        (0, 1, 1),
-                        (0, 2, 8),
-                        (1, 4, 6),
-                        (1, 3, 3),
-                        (2, 4, 5),
-                        (3, 5, 4),
-                        (4, 5, 2),
-                        (4, 6, 8),
-                        (5, 6, 5),
-                        (5, 6, 7)
-                    ]
-                );
-                var size = 700;
+                //var graph = new Graph<int>(
+                //    [0, 1, 2, 3, 4, 5, 6,],
+                //    [
+                //        (0, 1, 1),
+                //        (0, 2, 8),
+                //        (1, 4, 6),
+                //        (1, 3, 3),
+                //        (2, 4, 5),
+                //        (3, 5, 4),
+                //        (4, 5, 2),
+                //        (4, 6, 8),
+                //        (5, 6, 5),
+                //        (5, 6, 7)
+                //    ]
+                //);
+
+                var graph = Graph.RandomGraph(numOfVertex, 4);
+                var size = 1000;
                 graph.FruchtermanReingold(size, size);
                 progress.Report(25);
 
