@@ -40,37 +40,8 @@ public class Graph<T> where T : IEquatable<T>
     public int TotalWeight => EdgesDistinct.Aggregate(0, (acc, e) => acc + e.Weight);
 
     public Graph(List<T> vertices, List<(T v1, T v2, int weight)> edges)
-    {
-        foreach (var (v1, v2, weight) in edges)
-        {
-            if (!vertices.Contains(v1) || !vertices.Contains(v2))
-                throw new ArgumentException("Ada edge dengan verteks yang tidak ada di 'verteks'");
-
-            if (v1.Equals(v2))
-                throw new ArgumentException("Terdapat loop");
-
-            if (weight <= 0)
-                throw new ArgumentException("Ada edge dengan weight kurang dari 0");
-        }
-
-        _vertices = vertices.Distinct().Select(t => new Vertex<T>(t)).ToList();
-        _adjencyList = _vertices.Select(x => new List<(Vertex<T> v, int weight)>()).ToList();
-
-        foreach (var (v1, v2, weight) in edges)
-        {
-            var indeksV1 = vertices.FindIndex(t => t.Equals(v1));
-            var indeksV2 = vertices.FindIndex(t => t.Equals(v2));
-
-            if (_adjencyList[indeksV1].FindIndex(x => x.v.Value.Equals(v2)) == -1)
-            {
-                _adjencyList[indeksV1].Add(((Vertex<T> v, int weight))(new Vertex<T>(v2), weight));
-            }
-
-            if (_adjencyList[indeksV2].FindIndex(x => x.v.Value.Equals(v1)) == -1)
-            {
-                _adjencyList[indeksV2].Add(((Vertex<T> v, int weight))(new Vertex<T>(v1), weight));
-            }
-        }
+        : this(vertices.Select(v => new Vertex<T>(v)).ToList(), edges.Select(e => new Edge<T>(e.v1, e.v2, e.weight)).ToList())
+    { 
     }
 
     public Graph(List<Vertex<T>> vertices, List<Edge<T>> edges)
@@ -80,8 +51,8 @@ public class Graph<T> where T : IEquatable<T>
 
         foreach (var edge in edges)
         {
-            var indexV1 = _vertices.FindIndex(x => x == edge.V1);
-            var indexV2 = _vertices.FindIndex(x => x == edge.V2);
+            var indexV1 = _vertices.IndexOf(edge.V1);
+            var indexV2 = _vertices.IndexOf(edge.V2);
 
             if (indexV1 == -1 || indexV2 == -1)
                 throw new ArgumentException($"no vertex {edge.V1} or {edge.V2} in vertices");
@@ -90,17 +61,17 @@ public class Graph<T> where T : IEquatable<T>
                 throw new ArgumentException("negatif edge weight");
 
             if (_adjencyList[indexV1].FindIndex(adj => adj.v == edge.V2) == -1)
-                _adjencyList[indexV1].Add((edge.V2, edge.Weight));
+                _adjencyList[indexV1].Add((_vertices[indexV2], edge.Weight));
 
             if (_adjencyList[indexV2].FindIndex(adj => adj.v == edge.V1) == -1)
-                _adjencyList[indexV2].Add((edge.V1, edge.Weight));
+                _adjencyList[indexV2].Add((_vertices[indexV1], edge.Weight));
         }
     }
 
     public Graph(Graph<T> graph)
     {
         _vertices = graph._vertices.Select(v => new Vertex<T>(v.Value, v.Position, v.Disposition)).ToList();
-        _adjencyList = graph._adjencyList.Select(adj => adj.Select(a => (new Vertex<T>(a.v.Value), a.weight)).ToList()).ToList();
+        _adjencyList = graph._adjencyList.Select(adj => adj.Select(a => (_vertices.Find(v => v == a.v)!, a.weight)).ToList()).ToList();
     }
 
     public int AddVertex(Vertex<T> v)
@@ -124,11 +95,14 @@ public class Graph<T> where T : IEquatable<T>
         if (edge.Weight < 0)
             throw new ArgumentException("weight negatif");
 
-        var indexV1 = AddVertex(edge.V1);
-        var indexV2 = AddVertex(edge.V2);
+        var indexV1 = _vertices.IndexOf(edge.V1);
+        var indexV2 = _vertices.IndexOf(edge.V2);
 
-        _adjencyList[indexV1].Add((edge.V2, edge.Weight));
-        _adjencyList[indexV2].Add((edge.V1, edge.Weight));
+        if (indexV1 == -1 || indexV2 == -1)
+            throw new ArgumentException($"V1 dan V2 tidak ada di vertices");
+
+        _adjencyList[indexV1].Add((_vertices[indexV2], edge.Weight));
+        _adjencyList[indexV2].Add((_vertices[indexV1], edge.Weight));
     }
 
     public bool RemoveVertex(Vertex<T> vertex)
@@ -270,8 +244,8 @@ public class Graph<T> where T : IEquatable<T>
 
             foreach (var e in Edges)
             {
-                var v1 = _vertices.Find(v => v == e.V1)!;
-                var v2 = _vertices.Find(v => v == e.V2)!;
+                var v1 = e.V1;
+                var v2 = e.V2;
                 var delta = v1.Position - v2.Position;
                 v1.Disposition = v1.Disposition - (delta / (delta.Length() + (float)0.0000001)) * fa(delta.Length());
                 v2.Disposition = v2.Disposition + (delta / (delta.Length() + (float)0.0000001)) * fa(delta.Length());

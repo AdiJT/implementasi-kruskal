@@ -42,13 +42,13 @@ public static class GraphExtension
         for(int i = 0; i < graph.EdgesDistinct.Count; i++)
         {
             var e = graph.EdgesDistinct[i];
-            var v1 = graph.Vertices.FirstOrDefault(x => x == e.V1)!.Position;
-            var v2 = graph.Vertices.FirstOrDefault(x => x == e.V2)!.Position;
+            var v1 = e.V1.Position;
+            var v2 = e.V2.Position;
             var delta = (v1 - v2);
 
             var lineOffset = vertexSize / 2 / delta.Length();
-            var lineXOffset = delta.X / MathF.Abs(delta.X) * MathF.Abs(delta.X * lineOffset);
-            var lineYOffset = delta.Y / MathF.Abs(delta.Y) * MathF.Abs(delta.Y * lineOffset);
+            var lineXOffset = delta.X / MathF.Abs(delta.X + 1e-5f) * MathF.Abs(delta.X * lineOffset);
+            var lineYOffset = delta.Y / MathF.Abs(delta.Y + 1e-5f) * MathF.Abs(delta.Y * lineOffset);
 
             p.Color = colors[i];
             g.DrawLine(
@@ -65,13 +65,13 @@ public static class GraphExtension
         for (int i = 0; i < graph.EdgesDistinct.Count; i++)
         {
             var e = graph.EdgesDistinct[i];
-            var v1 = graph.Vertices.FirstOrDefault(x => x == e.V1)!.Position;
-            var v2 = graph.Vertices.FirstOrDefault(x => x == e.V2)!.Position;
+            var v1 = e.V1.Position;
+            var v2 = e.V2.Position;
             var delta = (v1 - v2);
 
             const float textOffset = 0.3f;
-            var textXOffset = delta.X / MathF.Abs(delta.X) * MathF.Abs(delta.X * textOffset);
-            var textYOffset = delta.Y / MathF.Abs(delta.Y) * MathF.Abs(delta.Y * textOffset);
+            var textXOffset = delta.X / MathF.Abs(delta.X + 1e-5f) * MathF.Abs(delta.X * textOffset);
+            var textYOffset = delta.Y / MathF.Abs(delta.Y + 1e-5f) * MathF.Abs(delta.Y * textOffset);
 
             b.Color = Color.White;
             g.FillRectangle(
@@ -90,10 +90,6 @@ public static class GraphExtension
         }
 
         //Draw Title
-        b.Color = Color.White;
-        g.FillRectangle(b, 0, 0, width, 50);
-
-        b.Color = defaultBrushColor;
         using var f1 = new Font("Calibri", 30);
         g.DrawString(title, f, b, 10, 10);
 

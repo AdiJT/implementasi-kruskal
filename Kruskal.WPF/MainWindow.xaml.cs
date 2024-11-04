@@ -16,7 +16,6 @@ namespace Kruskal.WPF
         {
             InitializeComponent();
             Btn_Execute.Click += Btn_Execute_Click;
-            Btn_ExecuteF.Click += Btn_ExecuteF_Click;
         }
 
         private async void Btn_Execute_Click(object sender, RoutedEventArgs e)
@@ -102,26 +101,6 @@ namespace Kruskal.WPF
             TextBox_NumOfVertex.IsEnabled = true;
             Btn_Execute.IsEnabled = true;
             Progress_Bar.Value = 0;
-        }
-
-        private void Btn_ExecuteF_Click(object sender, RoutedEventArgs e)
-        {
-            var graph = Graph.GenerateCompleteGraph(int.Parse(TextBox_NumOfVertex.Text.Trim()));
-
-            var iterasi = 100;
-
-            WrapPanel_Result.Children.Clear();
-
-
-            for (int i = 0; i < iterasi; i++)
-            {
-                graph.FruchtermanReingold(10000, 10000, i);
-                WrapPanel_Result.Children.Add(new Image()
-                {
-                    Height = 300,
-                    Source = graph.ToBitmap(10000, 10000, $"Iterasi {i + 1}").ToWpfBitmap()
-                });
-            }
         }
     }
 }
