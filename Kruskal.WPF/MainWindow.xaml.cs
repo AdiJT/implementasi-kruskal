@@ -12,18 +12,62 @@ namespace Kruskal.WPF
     /// </summary>
     public partial class MainWindow : Window
     {
+        private const int _size = 1000;
+        private Graph<int>? _graph;
+        private BitmapSource? _graphBmp;
+
         public MainWindow()
         {
             InitializeComponent();
         }
 
-        private async void Btn_Execute_Click(object sender, RoutedEventArgs e)
+        private void AddBitmapToWrapPanel(BitmapSource bmp)
         {
+            var element = new Button
+            {
+                Content = new Image
+                {
+                    Source = bmp,
+                    Height = 400,
+                }
+            };
+
+            element.Click += (s, e) =>
+            {
+                var window = new Window()
+                {
+                    WindowState = WindowState.Maximized
+                };
+
+                var dp = new DockPanel();
+                dp.Children.Add(new Image() { Source = bmp, Stretch = Stretch.Uniform });
+                window.Content = dp;
+                window.Show();
+            };
+
+            WrapPanel_Result.Children.Add(element);
+        }
+
+        private void Btn_Generate_Click(object sender, RoutedEventArgs e)
+        {
+            WrapPanel_Result.Children.Clear();
+
+            var numOfVertex = int.Parse(TextBox_NumOfVertex.Text);
+            var degree = int.Parse(TextBox_NumOfDegree.Text);
+            _graph = Graph.RandomGraph(numOfVertex, degree);
+            _graph.FruchtermanReingold(_size, _size);
+            _graphBmp = _graph.ToBitmap(_size, _size, "Graph Asli").ToWpfBitmap();
+
+            AddBitmapToWrapPanel(_graphBmp);
+        }
+
+        private async void Btn_Kruskal_Click(object sender, RoutedEventArgs e)
+        {
+            if(_graph is null || _graphBmp is null) return;
+
             Progress_Bar.Value = 0;
             WrapPanel_Result.Children.Clear();
-            TextBox_NumOfVertex.IsEnabled = false;
-            TextBox_NumOfDegree.IsEnabled = false;
-            Btn_Execute.IsEnabled = false;
+            IsEnabled = false;
 
             IProgress<(int, BitmapSource?)> progress = new Progress<(int, BitmapSource?)>(
                 (p) =>
@@ -33,67 +77,79 @@ namespace Kruskal.WPF
 
                     if (bmp is not null)
                     {
-
-                        var element = new Button
-                        {
-                            Content = new Image
-                            {
-                                Source = bmp,
-                                Height = 400,
-                            }
-                        };
-
-                        element.Click += (s, e) =>
-                        {
-                            var window = new Window()
-                            {
-                                WindowState = WindowState.Maximized
-                            };
-
-                            var dp = new DockPanel();
-                            dp.Children.Add(new Image() { Source = bmp, Stretch = Stretch.Uniform });
-                            window.Content = dp;
-                            window.Show();
-                        };
-
-                        WrapPanel_Result.Children.Add(element);
+                        AddBitmapToWrapPanel(bmp);
                     }
                 }
             );
 
-            var numOfVertex = Math.Max(int.Parse(TextBox_NumOfVertex.Text), 2);
-            var numOfDegree = int.Parse(TextBox_NumOfDegree.Text);
+            AddBitmapToWrapPanel(_graphBmp);
 
             var result = await Task.Run(() =>
             {
-                var graph = Graph.RandomGraph(numOfVertex, numOfDegree);
-                var size = 1000;
-                graph.FruchtermanReingold(size, size);
-                progress.Report((25, graph.ToBitmap(size, size, "Graph Asli").ToWpfBitmap()));
-
-                var (subgraph, history) = graph.Kruskal();
-                progress.Report((25, null));
+                var (subgraph, history) = _graph.Kruskal();
 
                 foreach (var (g, be) in history)
                 {
                     var bmp = g.ToBitmap(
-                        size, size,
+                        _size, _size,
                         be is null ? "Iterasi 0" : $"Tambah Sisi ({be.V1.Value}, {be.V2.Value}) dengan bobot {be.Weight}")
                     .ToWpfBitmap();
 
-                    progress.Report((50 * (1 / history.Count), bmp));
+                    progress.Report(((int)(100d * (1d / history.Count)), bmp));
                 }
 
-                return (graph, subgraph);
+                return subgraph;
             });
 
-            TextBox_TotalW.Text = result.graph.TotalWeight.ToString();
-            TextBox_MSTW.Text = result.subgraph.TotalWeight.ToString();
+            TextBox_TotalW.Text = _graph.TotalWeight.ToString();
+            TextBox_MSTW.Text = result.TotalWeight.ToString();
 
-            TextBox_NumOfVertex.IsEnabled = true;
-            TextBox_NumOfDegree.IsEnabled = true;
-            Btn_Execute.IsEnabled = true;
+            IsEnabled = true;
             Progress_Bar.Value = 0;
+        }
+
+        private async void Btn_Djikstra_Click(object sender, RoutedEventArgs e)
+        {
+            if (_graph is null || _graphBmp is null) return;
+
+            Progress_Bar.Value = 0;
+            WrapPanel_Result.Children.Clear();
+            IsEnabled = false;
+
+            IProgress<(int, BitmapSource?)> progress = new Progress<(int, BitmapSource?)>(
+                (p) =>
+                {
+                    Progress_Bar.Value += p.Item1;
+                    var bmp = p.Item2;
+
+                    if (bmp is not null)
+                    {
+                        AddBitmapToWrapPanel(bmp);
+                    }
+                }
+            );
+
+            AddBitmapToWrapPanel(_graphBmp);
+
+            var start = int.Parse(TextBox_Start.Text);
+
+            await Task.Run(() =>
+            {
+                var result = _graph.Djikstra(new(start));
+
+                foreach(var r in result)
+                {
+                    var bmp = _graph.ToBitmap(
+                        _size, _size,
+                        $"Shortest Path dari {start} ke {r.end.Value} dengan Cost {r.cost}",
+                        r).ToWpfBitmap();
+
+                    progress.Report(((int)(100d * (1d / result.Count)), bmp));
+                }
+            });
+
+            Progress_Bar.Value = 0;
+            IsEnabled = true;
         }
     }
 }

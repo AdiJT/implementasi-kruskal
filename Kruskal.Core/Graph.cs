@@ -310,7 +310,7 @@ public class Graph<T> where T : IEquatable<T>
 
                     if (inQueue == null)
                     {
-                        priorityQueue.Enqueue(new(neighbor.adj, neighbor.weight, node));
+                        priorityQueue.Enqueue(new(neighbor.adj, node.Cost + neighbor.weight, node));
                     } 
                     else
                     {
@@ -338,6 +338,7 @@ public class Graph<T> where T : IEquatable<T>
                 parent = parent.Parent;
             }
 
+            path.Reverse();
             result.Add((node.Vertex, node.Cost, path));
         }
 

@@ -9,6 +9,8 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="20" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
@@ -22,18 +24,29 @@
             <TextBlock Margin="2, 5" VerticalAlignment="Center">Degree</TextBlock>
             <TextBox x:Name="TextBox_NumOfDegree" Margin="2, 5" VerticalAlignment="Center" Width="75" Text="5"/>
 
-            <Button Click="Btn_Execute_Click" x:Name="Btn_Execute" HorizontalAlignment="Center" Margin="2, 10" Content="Generate Graph dan Eksekusi Kruskal" />
+            <Button Click="Btn_Generate_Click" x:Name="Btn_Generate" HorizontalAlignment="Center" Margin="2, 10" Content="Generate Graph" />
+        </WrapPanel>
+        
+        <WrapPanel Grid.Row="1" Orientation="Horizontal">
+            <Button Click="Btn_Kruskal_Click" x:Name="Btn_Kruskal" HorizontalAlignment="Center" Margin="2, 10" Content="Kruskal" />
 
             <TextBlock Margin="2, 5" VerticalAlignment="Center">Total Weight Original</TextBlock>
             <TextBox x:Name="TextBox_TotalW" IsReadOnly="True" Margin="2, 5" VerticalAlignment="Center" Width="75" Text="0"/>
-            
+
             <TextBlock Margin="2, 5" VerticalAlignment="Center">Total Weight Minimum Spanning Tree</TextBlock>
             <TextBox x:Name="TextBox_MSTW" IsReadOnly="True" Margin="2, 5" VerticalAlignment="Center" Width="75" Text="0"/>
         </WrapPanel>
 
-        <ProgressBar x:Name="Progress_Bar" Grid.Row="1" />
+        <WrapPanel Grid.Row="2" Orientation="Horizontal">
+            <Button Click="Btn_Djikstra_Click" x:Name="Btn_Djikstra" HorizontalAlignment="Center" Margin="2, 10" Content="Djikstra" />
 
-        <ScrollViewer VerticalScrollBarVisibility="Auto"  Grid.Row="2">
+            <TextBlock Margin="2, 5" VerticalAlignment="Center">Start</TextBlock>
+            <TextBox x:Name="TextBox_Start" Margin="2, 5" VerticalAlignment="Center" Width="75" Text="1"/>
+        </WrapPanel>
+
+        <ProgressBar x:Name="Progress_Bar" Grid.Row="3" />
+
+        <ScrollViewer VerticalScrollBarVisibility="Auto"  Grid.Row="4">
             <WrapPanel x:Name="WrapPanel_Result">
             </WrapPanel>
         </ScrollViewer>
