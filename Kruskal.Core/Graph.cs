@@ -74,6 +74,17 @@ public class Graph<T> where T : IEquatable<T>
         _adjencyList = graph._adjencyList.Select(adj => adj.Select(a => (_vertices.Find(v => v == a.v)!, a.weight)).ToList()).ToList();
     }
 
+    public int EdgeCost(Vertex<T> a, Vertex<T> b)
+    {
+        var indexA = _vertices.IndexOf(a);
+        var adjIndexB = _adjencyList[indexA].FindIndex(adj => adj.v == b);
+
+        if (adjIndexB == -1)
+            return int.MaxValue;
+        else
+            return _adjencyList[indexA][adjIndexB].weight;
+    }
+
     public int AddVertex(Vertex<T> v)
     {
         if (_vertices.Contains(v))
@@ -274,14 +285,81 @@ public class Graph<T> where T : IEquatable<T>
         return (subgraph, history);
     }
 
-    //public List<Vertex<T>> Djikstra(Vertex<T> start, Vertex<T> end)
-    //{
-    //    if (!_vertices.Contains(start) || !_vertices.Contains(end))
-    //        throw new ArgumentException("start dan end bukan vertex");
 
-    //    if (start == end)
-    //        throw new ArgumentException("start dan end sama");
-    //}
+    private class DjikstraNode
+    {
+        public Vertex<T> Vertex { get; set; }
+        public int Cost {  get; set; }
+        public DjikstraNode? Parent { get; set; }
+
+        public DjikstraNode(Vertex<T> vertex, int cost, DjikstraNode? parent)
+        {
+            Vertex = vertex;
+            Cost = cost;
+            Parent = parent;
+        }
+    }
+
+    public List<(Vertex<T> end, int cost, List<Vertex<T>> path)> Djikstra(Vertex<T> start)
+    {
+        if (!_vertices.Contains(start))
+            throw new ArgumentException("start tidak dalam graph");
+
+        start = _vertices.Find(v => v == start)!;
+        var startNode = new DjikstraNode(start, 0, null);
+
+        var finalized = new List<DjikstraNode>();
+        var priorityQueue = new MinHeapQueue<DjikstraNode, int>(n => n.Cost);
+
+        priorityQueue.Enqueue(startNode);
+
+        while(priorityQueue.Count > 0)
+        {
+            var node = priorityQueue.Dequeue();
+            var vertexIndex = _vertices.IndexOf(node.Vertex);
+            finalized.Add(node);
+
+            foreach (var neighbor in _adjencyList[vertexIndex])
+            {
+                if(finalized.Find(n => n.Vertex == neighbor.v) == null)
+                {
+                    var inQueue = priorityQueue.Find(n => n.Vertex == neighbor.v);
+
+                    if (inQueue == null)
+                    {
+                        priorityQueue.Enqueue(new(neighbor.v, neighbor.weight, node));
+                    } 
+                    else
+                    {
+                        var newCost = node.Cost + neighbor.weight;
+                        if(newCost < inQueue.Cost)
+                        {
+                            inQueue.Cost = newCost;
+                            inQueue.Parent = node;
+                        }
+                    }
+                }
+            }
+        }
+
+        var result = new List<(Vertex<T> end, int cost, List<Vertex<T>> path)>();
+
+        foreach (var node in finalized)
+        {
+            var path = new List<Vertex<T>>() { node.Vertex };
+            var parent = node.Parent;
+
+            while(parent != null)
+            {
+                path.Add(parent.Vertex);
+                parent = parent.Parent;
+            }
+
+            result.Add((node.Vertex, node.Cost, path));
+        }
+
+        return result;
+    }
 }
 
 public static class Graph

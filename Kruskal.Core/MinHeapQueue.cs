@@ -23,6 +23,10 @@ public class MinHeapQueue<T, TKey>
         BuildMinHeap();
     }
 
+    public bool Contains(T item) => _queue.Contains(item);
+
+    public T? Find(Predicate<T> match) => _queue.Find(match);
+
     public void Enqueue(T item)
     {
         _queue.Add(item);
