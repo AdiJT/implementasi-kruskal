@@ -5,33 +5,24 @@ namespace Kruskal.Core;
 
 public class Graph<T> where T : IEquatable<T>
 {
-    private readonly List<List<(Vertex<T> v, int weight)>> _adjencyList;
     private readonly List<Vertex<T>> _vertices;
 
     public IReadOnlyList<Vertex<T>> Vertices => _vertices;
-    public IReadOnlyList<IReadOnlyList<(Vertex<T> v, int weight)>> AdjencyList => _adjencyList;
     public IReadOnlyList<Edge<T>> Edges => _vertices
-        .SelectMany((v, i) => _adjencyList[i].Select(adj => new Edge<T>(v, adj.v, adj.weight)))
+         .SelectMany((v) => v.AdjencyList.Select(adj => new Edge<T>(v, adj.adj, adj.weight)))
          .ToList();
 
     public IReadOnlyList<Edge<T>> EdgesDistinct
     {
         get
         {
-            var edges = _vertices.SelectMany((v, i) => _adjencyList[i].Select(a => new Edge<T>(v, a.v, a.weight)))
-                .ToList()
-                .Distinct()
-                .ToList();
+            var edges = Edges;
 
             var result = new List<Edge<T>>();
 
             foreach (var edge in edges)
-            {
                 if (!result.Contains(edge))
-                {
                     result.Add(edge);
-                }
-            }
 
             return result;
         }
@@ -46,8 +37,10 @@ public class Graph<T> where T : IEquatable<T>
 
     public Graph(List<Vertex<T>> vertices, List<Edge<T>> edges)
     {
-        _vertices = vertices.Distinct().ToList();
-        _adjencyList = vertices.Select(v => new List<(Vertex<T> v, int weight)>()).ToList();
+        _vertices = vertices
+            .Distinct()
+            .Select(v => new Vertex<T>(v.Value, v.Position, Vector2.Zero, []))
+            .ToList();
 
         foreach (var edge in edges)
         {
@@ -60,29 +53,28 @@ public class Graph<T> where T : IEquatable<T>
             if (edge.Weight < 0)
                 throw new ArgumentException("negatif edge weight");
 
-            if (_adjencyList[indexV1].FindIndex(adj => adj.v == edge.V2) == -1)
-                _adjencyList[indexV1].Add((_vertices[indexV2], edge.Weight));
+            if (_vertices[indexV1].AdjencyList.FindIndex(adj => adj.adj == edge.V2) == -1)
+                _vertices[indexV1].AdjencyList.Add((_vertices[indexV2], edge.Weight));
 
-            if (_adjencyList[indexV2].FindIndex(adj => adj.v == edge.V1) == -1)
-                _adjencyList[indexV2].Add((_vertices[indexV1], edge.Weight));
+            if (_vertices[indexV2].AdjencyList.FindIndex(adj => adj.adj == edge.V1) == -1)
+                _vertices[indexV2].AdjencyList.Add((_vertices[indexV1], edge.Weight));
         }
     }
 
     public Graph(Graph<T> graph)
+        : this([..graph.Vertices], [..graph.EdgesDistinct])
     {
-        _vertices = graph._vertices.Select(v => new Vertex<T>(v.Value, v.Position, v.Disposition)).ToList();
-        _adjencyList = graph._adjencyList.Select(adj => adj.Select(a => (_vertices.Find(v => v == a.v)!, a.weight)).ToList()).ToList();
     }
 
     public int EdgeCost(Vertex<T> a, Vertex<T> b)
     {
         var indexA = _vertices.IndexOf(a);
-        var adjIndexB = _adjencyList[indexA].FindIndex(adj => adj.v == b);
+        var adjIndexB = _vertices[indexA].AdjencyList.FindIndex(adj => adj.adj == b);
 
         if (adjIndexB == -1)
             return int.MaxValue;
         else
-            return _adjencyList[indexA][adjIndexB].weight;
+            return _vertices[indexA].AdjencyList[adjIndexB].weight;
     }
 
     public int AddVertex(Vertex<T> v)
@@ -91,7 +83,6 @@ public class Graph<T> where T : IEquatable<T>
             return _vertices.FindIndex(x => x == v);
 
         _vertices.Add(v);
-        _adjencyList.Add([]);
         return _vertices.Count - 1;
     }
 
@@ -112,8 +103,8 @@ public class Graph<T> where T : IEquatable<T>
         if (indexV1 == -1 || indexV2 == -1)
             throw new ArgumentException($"V1 dan V2 tidak ada di vertices");
 
-        _adjencyList[indexV1].Add((_vertices[indexV2], edge.Weight));
-        _adjencyList[indexV2].Add((_vertices[indexV1], edge.Weight));
+        _vertices[indexV1].AdjencyList.Add((_vertices[indexV2], edge.Weight));
+        _vertices[indexV2].AdjencyList.Add((_vertices[indexV1], edge.Weight));
     }
 
     public bool RemoveVertex(Vertex<T> vertex)
@@ -123,7 +114,6 @@ public class Graph<T> where T : IEquatable<T>
         if (indeks == -1) return false;
 
         _vertices.Remove(vertex);
-        _adjencyList.RemoveAt(indeks);
 
         return true;
     }
@@ -135,11 +125,11 @@ public class Graph<T> where T : IEquatable<T>
         var indexV1 = _vertices.FindIndex(x => x == edge.V1);
         var indexV2 = _vertices.FindIndex(x => x == edge.V2);
 
-        var indexAdjV1 = _adjencyList[indexV2].FindIndex(a => a.v == edge.V1);
-        var indexAdjV2 = _adjencyList[indexV1].FindIndex(a => a.v == edge.V2);
+        var indexAdjV1 = _vertices[indexV2].AdjencyList.FindIndex(a => a.adj == edge.V1);
+        var indexAdjV2 = _vertices[indexV1].AdjencyList.FindIndex(a => a.adj == edge.V2);
 
-        _adjencyList[indexV1].RemoveAt(indexAdjV2);
-        _adjencyList[indexV2].RemoveAt(indexAdjV1);
+        _vertices[indexV1].AdjencyList.RemoveAt(indexAdjV2);
+        _vertices[indexV2].AdjencyList.RemoveAt(indexAdjV1);
 
         return true;
     }
@@ -147,10 +137,8 @@ public class Graph<T> where T : IEquatable<T>
     public List<Vertex<T>> Neighbor(Vertex<T> vertex)
     {
         var index = _vertices.FindIndex(v => v == vertex);
-
         if (index == -1) return [];
-
-        return _adjencyList[index].Select(adj => adj.v).ToList();
+        return _vertices[index].AdjencyList.Select(adj => adj.adj).ToList();
     }
 
     public bool DetectCycleDFS(Vertex<T>? start = null)
@@ -186,18 +174,14 @@ public class Graph<T> where T : IEquatable<T>
         var dus = new DisjointUnionSet<Vertex<T>>(_vertices);
 
         foreach (var e in EdgesDistinct)
-        {
             if (!dus.UnionByValue(e.V1, e.V2))
                 return true;
-        }
 
         return false;
     }
 
     public void FruchtermanReingold(int width, int height, int iterations = 100)
     {
-        var halfWidth = width / 2;
-        var halfHeight = height / 2;
         var temperature = (float)width / 10;
         var area = width * height;
         var k = MathF.Sqrt(area / _vertices.Count);
@@ -260,12 +244,13 @@ public class Graph<T> where T : IEquatable<T>
         if (index == -1)
             throw new ArgumentException("");
 
-        return _adjencyList[index].Count;
+        return _vertices[index].AdjencyList.Count;
     }
 
     public (Graph<T> subgraph, List<(Graph<T> g, Edge<T>? bestEdge)> history) Kruskal()
     {
-        var subgraph = new Graph<T>(_vertices, []);
+        var subgraph = new Graph<T>(_vertices.Select(v => new Vertex<T>(v.Value, v.Position, Vector2.Zero, [])).ToList(), []);
+
         var history = new List<(Graph<T> g, Edge<T>? bestEdge)> { (new(subgraph), null) };
         var priorityQueue = new MinHeapQueue<Edge<T>, int>(e => e.Weight, EdgesDistinct); 
         var dus = new DisjointUnionSet<Vertex<T>>(_vertices);
@@ -284,7 +269,6 @@ public class Graph<T> where T : IEquatable<T>
 
         return (subgraph, history);
     }
-
 
     private class DjikstraNode
     {
@@ -316,18 +300,17 @@ public class Graph<T> where T : IEquatable<T>
         while(priorityQueue.Count > 0)
         {
             var node = priorityQueue.Dequeue();
-            var vertexIndex = _vertices.IndexOf(node.Vertex);
             finalized.Add(node);
 
-            foreach (var neighbor in _adjencyList[vertexIndex])
+            foreach (var neighbor in node.Vertex.AdjencyList)
             {
-                if(finalized.Find(n => n.Vertex == neighbor.v) == null)
+                if(finalized.Find(n => n.Vertex == neighbor.adj) == null)
                 {
-                    var inQueue = priorityQueue.Find(n => n.Vertex == neighbor.v);
+                    var inQueue = priorityQueue.Find(n => n.Vertex == neighbor.adj);
 
                     if (inQueue == null)
                     {
-                        priorityQueue.Enqueue(new(neighbor.v, neighbor.weight, node));
+                        priorityQueue.Enqueue(new(neighbor.adj, neighbor.weight, node));
                     } 
                     else
                     {
