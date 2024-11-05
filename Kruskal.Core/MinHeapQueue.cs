@@ -30,7 +30,7 @@ public class MinHeapQueue<T, TKey>
     public void Enqueue(T item)
     {
         _queue.Add(item);
-        BuildMinHeap();
+        ShiftUp();
     }
 
     public T Dequeue()
@@ -43,13 +43,34 @@ public class MinHeapQueue<T, TKey>
     }
 
     public T Peek() => _queue[0];
-    
+
     private int Compare(T x, T y) => _keySelector(x).CompareTo(_keySelector(y));
 
     private void BuildMinHeap()
     {
         for (int i = Count / 2 - 1; i >= 0; i--)
             MinHeapify(i);
+    }
+
+    private void ShiftUp()
+    {
+        var item = _queue[_queue.Count - 1];
+        var bestPos = Count - 1;
+        var parent = (int)((bestPos / 2d) - (1d / 2d));
+        var childPos = bestPos;
+
+        while (bestPos > 0 && Compare(item, _queue[parent]) < 0)
+        {
+            childPos = bestPos;
+            bestPos = parent;
+            parent = (int)((bestPos / 2d) - (1d / 2d));
+        }
+
+        if (bestPos != Count - 1)
+        {
+            (_queue[bestPos], _queue[Count - 1]) = (_queue[Count - 1], _queue[bestPos]);
+            MinHeapify(childPos);
+        }
     }
 
     private void MinHeapify(int pos)
@@ -64,7 +85,7 @@ public class MinHeapQueue<T, TKey>
         if (rightChild < Count && Compare(_queue[rightChild], _queue[smallest]) < 0)
             smallest = rightChild;
 
-        if(smallest != pos)
+        if (smallest != pos)
         {
             (_queue[pos], _queue[smallest]) = (_queue[smallest], _queue[pos]);
             MinHeapify(smallest);

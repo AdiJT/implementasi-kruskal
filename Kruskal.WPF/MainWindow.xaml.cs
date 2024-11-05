@@ -15,7 +15,6 @@ namespace Kruskal.WPF
         public MainWindow()
         {
             InitializeComponent();
-            Btn_Execute.Click += Btn_Execute_Click;
         }
 
         private async void Btn_Execute_Click(object sender, RoutedEventArgs e)
@@ -25,6 +24,7 @@ namespace Kruskal.WPF
             TextBox_NumOfVertex.IsEnabled = false;
             TextBox_NumOfDegree.IsEnabled = false;
             Btn_Execute.IsEnabled = false;
+
             IProgress<(int, BitmapSource?)> progress = new Progress<(int, BitmapSource?)>(
                 (p) =>
                 {
@@ -50,19 +50,16 @@ namespace Kruskal.WPF
                                 WindowState = WindowState.Maximized
                             };
 
-                            var dp = new DockPanel()
-                            {
-                            };
+                            var dp = new DockPanel();
                             dp.Children.Add(new Image() { Source = bmp, Stretch = Stretch.Uniform });
-
                             window.Content = dp;
-
                             window.Show();
                         };
 
                         WrapPanel_Result.Children.Add(element);
                     }
-                });
+                }
+            );
 
             var numOfVertex = Math.Max(int.Parse(TextBox_NumOfVertex.Text), 2);
             var numOfDegree = int.Parse(TextBox_NumOfDegree.Text);
@@ -74,7 +71,7 @@ namespace Kruskal.WPF
                 graph.FruchtermanReingold(size, size);
                 progress.Report((25, graph.ToBitmap(size, size, "Graph Asli").ToWpfBitmap()));
 
-                var (result, history) = graph.Kruskal();
+                var (subgraph, history) = graph.Kruskal();
                 progress.Report((25, null));
 
                 foreach (var (g, be) in history)
@@ -87,11 +84,11 @@ namespace Kruskal.WPF
                     progress.Report((50 * (1 / history.Count), bmp));
                 }
 
-                return (graph, result);
+                return (graph, subgraph);
             });
 
             TextBox_TotalW.Text = result.graph.TotalWeight.ToString();
-            TextBox_MSTW.Text = result.result.TotalWeight.ToString();
+            TextBox_MSTW.Text = result.subgraph.TotalWeight.ToString();
 
             TextBox_NumOfVertex.IsEnabled = true;
             TextBox_NumOfDegree.IsEnabled = true;

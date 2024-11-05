@@ -6,12 +6,12 @@ namespace Kruskal.WPF.Utils;
 
 public static class GraphExtension
 {
-    public static Bitmap ToBitmap<T>(this Graph<T> graph, int width, int height, string title)
+    public static Bitmap ToBitmap<T>(this Graph<T> graph, int width, int height, string title, int margin = 50)
         where T : IEquatable<T>
     {
         var defaultPenColor = Color.Black;
         var defaultBrushColor = Color.Green;
-        var bitmap = new Bitmap(width, height);
+        var bitmap = new Bitmap(width + 2 * margin, height + 2 * margin);
         using var g = Graphics.FromImage(bitmap);
         using var p = new Pen(defaultPenColor, 2);
         using var b = new SolidBrush(defaultBrushColor);
@@ -34,8 +34,8 @@ public static class GraphExtension
             y = MathF.Max(y, 0);
             y = MathF.Min(y, height - vertexSize);
 
-            g.DrawEllipse(p, x, y, vertexSize, vertexSize);
-            g.DrawString(v.Value.ToString(), f, b, x, y);
+            g.DrawEllipse(p, x + margin, y + margin, vertexSize, vertexSize);
+            g.DrawString(v.Value.ToString(), f, b, x + margin, y + margin);
         }
 
         //Draw edges
@@ -53,10 +53,10 @@ public static class GraphExtension
             p.Color = colors[i];
             g.DrawLine(
                 p, 
-                v1.X - lineXOffset,
-                v1.Y - lineYOffset,
-                v2.X + lineXOffset,
-                v2.Y + lineYOffset);
+                v1.X - lineXOffset + margin,
+                v1.Y - lineYOffset + margin,
+                v2.X + lineXOffset + margin,
+                v2.Y + lineYOffset + margin);
 
             p.Color = defaultPenColor;
         }
@@ -76,15 +76,15 @@ public static class GraphExtension
             b.Color = Color.White;
             g.FillRectangle(
                 b,
-                Math.Max(Math.Min(v1.X - (textXOffset + 10), width - f.Size), 0),
-                Math.Max(Math.Min(v1.Y - (textYOffset + 10), height - f.Size), 0),
+                Math.Max(Math.Min(v1.X - (textXOffset + 10), width - f.Size), 0) + margin,
+                Math.Max(Math.Min(v1.Y - (textYOffset + 10), height - f.Size), 0) + margin,
                 f.Size + 10, f.Size + 10);
 
             b.Color = colors[i];
             g.DrawString(
                 e.Weight.ToString(), f, b,
-                Math.Max(Math.Min(v1.X - (textXOffset + 10), width - f.Size), 0),
-                Math.Max(Math.Min(v1.Y - (textYOffset + 10), height - f.Size), 0));
+                Math.Max(Math.Min(v1.X - (textXOffset + 10), width - f.Size), 0) + margin,
+                Math.Max(Math.Min(v1.Y - (textYOffset + 10), height - f.Size), 0) + margin);
 
             b.Color = defaultBrushColor;
         }

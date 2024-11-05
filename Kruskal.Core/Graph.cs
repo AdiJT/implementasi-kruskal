@@ -371,6 +371,9 @@ public static class Graph
         if (numOfVertex <= 0)
             throw new ArgumentException("numOfVertex is zero or negative");
 
+        if (degree <= 0)
+            throw new ArgumentException("degree is zero or negative");
+
         degree = Math.Min(degree, numOfVertex - 1);
 
         var random = new Random();
@@ -388,7 +391,7 @@ public static class Graph
             edgesAdded++;
         }
 
-        var additionalEdge = Math.Min(edgesAdded + degree * (degree - 2)/2, numOfVertex * (numOfVertex - 1) / 2);
+        var additionalEdge = Math.Min(edgesAdded + degree * (degree - 1)/2, numOfVertex * (numOfVertex - 1) / 2);
         while(edgesAdded < additionalEdge)
         {
             var i = random.Next(0, numOfVertex);
