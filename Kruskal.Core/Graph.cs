@@ -297,19 +297,19 @@ public class Graph<T> where T : IEquatable<T>
             var node = priorityQueue.Dequeue();
             finalized.Add(node);
 
-            foreach (var neighbor in node.Vertex.AdjencyList)
+            foreach (var (adj, weight) in node.Vertex.AdjencyList)
             {
-                if(finalized.FirstOrDefault(n => n.Vertex == neighbor.adj) == null)
+                if(finalized.FirstOrDefault(n => n.Vertex == adj) == null)
                 {
-                    var inQueue = priorityQueue.Find(n => n.Vertex == neighbor.adj);
+                    var inQueue = priorityQueue.Find(n => n.Vertex == adj);
 
                     if (inQueue == null)
                     {
-                        priorityQueue.Enqueue(new(neighbor.adj, node.Cost + neighbor.weight, node));
+                        priorityQueue.Enqueue(new(adj, node.Cost + weight, node));
                     } 
                     else
                     {
-                        var newCost = node.Cost + neighbor.weight;
+                        var newCost = node.Cost + weight;
                         if(newCost < inQueue.Cost)
                         {
                             inQueue.Cost = newCost;
