@@ -256,33 +256,32 @@ public class Graph<T> where T : IEquatable<T>
     {
         var subgraph = new Graph<T>(_vertices, []);
         var history = new List<(Graph<T> g, Edge<T>? bestEdge)> { (new(subgraph), null) };
+        var priorityQueue = new MinHeapQueue<Edge<T>, int>(e => e.Weight, EdgesDistinct); 
         var dus = new DisjointUnionSet<Vertex<T>>(_vertices);
 
-        while (subgraph.EdgesDistinct.Count < _vertices.Count - 1)
+        while (subgraph.EdgesDistinct.Count < subgraph.Vertices.Count - 1)
         {
-            Edge<T>? bestEdge = null;
+            var bestEdge = priorityQueue.Dequeue();
 
-            foreach (var edge in EdgesDistinct)
-            {
-                if (!subgraph.EdgesDistinct.Contains(edge) && dus.FindByValue(edge.V1) != dus.FindByValue(edge.V2))
-                {
-                    if (bestEdge is null)
-                        bestEdge = edge;
-                    else
-                    {
-                        if (edge.Weight < bestEdge.Weight)
-                            bestEdge = edge;
-                    }
-                }
-            }
-            subgraph.AddEdge(bestEdge!);
+            while (subgraph.EdgesDistinct.Contains(bestEdge) || dus.FindByValue(bestEdge.V1) == dus.FindByValue(bestEdge.V2))
+                bestEdge = priorityQueue.Dequeue();
 
+            subgraph.AddEdge(bestEdge);
+            dus.UnionByValue(bestEdge.V1, bestEdge.V2);
             history.Add((new Graph<T>(subgraph), bestEdge));
-            dus.UnionByValue(bestEdge!.V1, bestEdge!.V2);
         }
 
         return (subgraph, history);
     }
+
+    //public List<Vertex<T>> Djikstra(Vertex<T> start, Vertex<T> end)
+    //{
+    //    if (!_vertices.Contains(start) || !_vertices.Contains(end))
+    //        throw new ArgumentException("start dan end bukan vertex");
+
+    //    if (start == end)
+    //        throw new ArgumentException("start dan end sama");
+    //}
 }
 
 public static class Graph
@@ -328,7 +327,7 @@ public static class Graph
             edgesAdded++;
         }
 
-        var additionalEdge = Math.Min(edgesAdded + degree * (degree - 1)/2, numOfVertex * (numOfVertex - 1) / 2);
+        var additionalEdge = Math.Min(edgesAdded + degree * (degree - 2)/2, numOfVertex * (numOfVertex - 1) / 2);
         while(edgesAdded < additionalEdge)
         {
             var i = random.Next(0, numOfVertex);

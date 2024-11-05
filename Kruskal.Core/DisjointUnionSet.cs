@@ -23,8 +23,7 @@ public class DisjointUnionSet<T>
             return index;
         else
         {
-            var parent = _parent[index];
-            _parent[index] = parent;
+            var parent = Find(_parent[index]);
             return parent;
         }
     }
