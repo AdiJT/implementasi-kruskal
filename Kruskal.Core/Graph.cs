@@ -270,18 +270,13 @@ public class Graph<T> where T : IEquatable<T>
         return (subgraph, history);
     }
 
-    private class DjikstraNode
+    private class DjikstraNode(Vertex<T> vertex, int cost, Graph<T>.DjikstraNode? parent)
     {
-        public Vertex<T> Vertex { get; set; }
-        public int Cost {  get; set; }
-        public DjikstraNode? Parent { get; set; }
+        public Vertex<T> Vertex { get; set; } = vertex;
+        public int Cost { get; set; } = cost;
+        public DjikstraNode? Parent { get; set; } = parent;
 
-        public DjikstraNode(Vertex<T> vertex, int cost, DjikstraNode? parent)
-        {
-            Vertex = vertex;
-            Cost = cost;
-            Parent = parent;
-        }
+        public override int GetHashCode() => Vertex.GetHashCode();
     }
 
     public List<(Vertex<T> end, int cost, List<Vertex<T>> path)> Djikstra(Vertex<T> start)
@@ -292,7 +287,7 @@ public class Graph<T> where T : IEquatable<T>
         start = _vertices.Find(v => v == start)!;
         var startNode = new DjikstraNode(start, 0, null);
 
-        var finalized = new List<DjikstraNode>();
+        var finalized = new HashSet<DjikstraNode>();
         var priorityQueue = new MinHeapQueue<DjikstraNode, int>(n => n.Cost);
 
         priorityQueue.Enqueue(startNode);
@@ -304,7 +299,7 @@ public class Graph<T> where T : IEquatable<T>
 
             foreach (var neighbor in node.Vertex.AdjencyList)
             {
-                if(finalized.Find(n => n.Vertex == neighbor.adj) == null)
+                if(finalized.FirstOrDefault(n => n.Vertex == neighbor.adj) == null)
                 {
                     var inQueue = priorityQueue.Find(n => n.Vertex == neighbor.adj);
 
