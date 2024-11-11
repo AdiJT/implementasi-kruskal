@@ -99,7 +99,7 @@ public static class GraphExtension
     public static Bitmap ToBitmap<T>(
         this Graph<T> graph,
         int width, int height, string title,
-        (Vertex<T> end, int cost, List<Vertex<T>> path) path,
+        (Vertex<T> end, double cost, List<Vertex<T>> path) path,
         int margin = 50)
         where T : IEquatable<T>
     {

@@ -13,7 +13,7 @@ namespace Kruskal.WPF
     public partial class MainWindow : Window
     {
         private const int _size = 1000;
-        private Graph<int>? _graph;
+        private Graph<string>? _graph;
         private BitmapSource? _graphBmp;
 
         public MainWindow()
@@ -54,7 +54,10 @@ namespace Kruskal.WPF
 
             var numOfVertex = int.Parse(TextBox_NumOfVertex.Text);
             var degree = int.Parse(TextBox_NumOfDegree.Text);
-            _graph = Graph.RandomGraph(numOfVertex, degree);
+            var rGraph = Graph.RandomGraph(numOfVertex, degree);
+
+            _graph = new Graph<string>(rGraph.Vertices.Select(v => new Vertex<string>(v.Value.ToString())).ToList(),
+                rGraph.Edges.Select(e => new Edge<string>(new Vertex<string>(e.V1.Value.ToString()), new Vertex<string>(e.V2.Value.ToString()), e.Weight)).ToList());
             _graph.FruchtermanReingold(_size, _size);
             _graphBmp = _graph.ToBitmap(_size, _size, "Graph Asli").ToWpfBitmap();
 
@@ -131,7 +134,7 @@ namespace Kruskal.WPF
 
             AddBitmapToWrapPanel(_graphBmp);
 
-            var start = int.Parse(TextBox_Start.Text);
+            var start = TextBox_Start.Text;
 
             await Task.Run(() =>
             {
@@ -150,6 +153,28 @@ namespace Kruskal.WPF
 
             Progress_Bar.Value = 0;
             IsEnabled = true;
+        }
+
+        private void Btn_Generate_Contoh_Click(object sender, RoutedEventArgs e)
+        {
+            _graph = new(["Kayu Putih", "TDM", "Oesapa Barat", "Oesapa", "Oesapa Selatan", "Liliba", "Lasiana", "Penfui"],
+                new List<(string v1, string v2, double weight)>
+                {
+                    ("Kayu Putih", "Oesapa Barat", 3.9),
+                    ("Kayu Putih", "TDM", 1.8),
+                    ("Oesapa Barat", "Oesapa", 2.1),
+                    ("Oesapa Barat", "TDM", 3.1),
+                    ("TDM", "Liliba", 3.1),
+                    ("Liliba", "Oesapa Selatan", 1.8),
+                    ("Oesapa", "Oesapa Selatan", 2.2),
+                    ("Oesapa", "Lasiana", 2.4),
+                    ("Lasiana", "Penfui", 5.8),
+                    ("Oesapa Selatan", "Penfui", 2.9)
+                });
+            _graph.FruchtermanReingold(_size, _size);
+            _graphBmp = _graph.ToBitmap(_size, _size, "Graph Asli").ToWpfBitmap();
+
+            AddBitmapToWrapPanel(_graphBmp);
         }
     }
 }

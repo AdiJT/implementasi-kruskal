@@ -28,9 +28,9 @@ public class Graph<T> where T : IEquatable<T>
         }
     }
 
-    public int TotalWeight => EdgesDistinct.Aggregate(0, (acc, e) => acc + e.Weight);
+    public double TotalWeight => EdgesDistinct.Aggregate(0d, (acc, e) => acc + e.Weight);
 
-    public Graph(List<T> vertices, List<(T v1, T v2, int weight)> edges)
+    public Graph(List<T> vertices, List<(T v1, T v2, double weight)> edges)
         : this(vertices.Select(v => new Vertex<T>(v)).ToList(), edges.Select(e => new Edge<T>(e.v1, e.v2, e.weight)).ToList())
     {
     }
@@ -66,13 +66,13 @@ public class Graph<T> where T : IEquatable<T>
     {
     }
 
-    public int EdgeCost(Vertex<T> a, Vertex<T> b)
+    public double EdgeCost(Vertex<T> a, Vertex<T> b)
     {
         var indexA = _vertices.IndexOf(a);
         var adjIndexB = _vertices[indexA].AdjencyList.FindIndex(adj => adj.adj == b);
 
         if (adjIndexB == -1)
-            return int.MaxValue;
+            return double.PositiveInfinity;
         else
             return _vertices[indexA].AdjencyList[adjIndexB].weight;
     }
@@ -252,7 +252,7 @@ public class Graph<T> where T : IEquatable<T>
         var subgraph = new Graph<T>(_vertices.Select(v => new Vertex<T>(v.Value, v.Position, Vector2.Zero, [])).ToList(), []);
 
         var history = new List<(Graph<T> g, Edge<T>? bestEdge)> { (new(subgraph), null) };
-        var priorityQueue = new MinHeapQueue<Edge<T>, int>(e => e.Weight, EdgesDistinct); 
+        var priorityQueue = new MinHeapQueue<Edge<T>, double>(e => e.Weight, EdgesDistinct); 
         var dus = new DisjointUnionSet<Vertex<T>>(_vertices);
 
         while (subgraph.EdgesDistinct.Count < subgraph.Vertices.Count - 1)
@@ -270,16 +270,16 @@ public class Graph<T> where T : IEquatable<T>
         return (subgraph, history);
     }
 
-    private class DjikstraNode(Vertex<T> vertex, int cost, Graph<T>.DjikstraNode? parent)
+    private class DjikstraNode(Vertex<T> vertex, double cost, Graph<T>.DjikstraNode? parent)
     {
         public Vertex<T> Vertex { get; set; } = vertex;
-        public int Cost { get; set; } = cost;
+        public double Cost { get; set; } = cost;
         public DjikstraNode? Parent { get; set; } = parent;
 
         public override int GetHashCode() => Vertex.GetHashCode();
     }
 
-    public List<(Vertex<T> end, int cost, List<Vertex<T>> path)> Djikstra(Vertex<T> start)
+    public List<(Vertex<T> end, double cost, List<Vertex<T>> path)> Djikstra(Vertex<T> start)
     {
         if (!_vertices.Contains(start))
             throw new ArgumentException("start tidak dalam graph");
@@ -288,7 +288,7 @@ public class Graph<T> where T : IEquatable<T>
         var startNode = new DjikstraNode(start, 0, null);
 
         var finalized = new HashSet<DjikstraNode>();
-        var priorityQueue = new MinHeapQueue<DjikstraNode, int>(n => n.Cost);
+        var priorityQueue = new MinHeapQueue<DjikstraNode, double>(n => n.Cost);
 
         priorityQueue.Enqueue(startNode);
 
@@ -320,7 +320,7 @@ public class Graph<T> where T : IEquatable<T>
             }
         }
 
-        var result = new List<(Vertex<T> end, int cost, List<Vertex<T>> path)>();
+        var result = new List<(Vertex<T> end, double cost, List<Vertex<T>> path)>();
 
         foreach (var node in finalized)
         {
@@ -350,7 +350,7 @@ public static class Graph
 
         var random = new Random();
         var vertices = Enumerable.Range(1, numOfVertex).ToList();
-        var edges = new List<(int, int, int)>();
+        var edges = new List<(int, int, double)>();
 
         foreach (var v in vertices)
             foreach (var u in vertices)

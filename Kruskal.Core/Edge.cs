@@ -5,16 +5,16 @@ public class Edge<T> : IEquatable<Edge<T>>
 {
     public Vertex<T> V1 { get; set; }
     public Vertex<T> V2 { get; set; }
-    public int Weight { get; set; }
+    public double Weight { get; set; }
 
-    public Edge(Vertex<T> v1, Vertex<T> v2, int weight)
+    public Edge(Vertex<T> v1, Vertex<T> v2, double weight)
     {
         V1 = v1;
         V2 = v2;
         Weight = weight;
     }
 
-    public Edge(T v1, T v2, int weight)
+    public Edge(T v1, T v2, double weight)
     {
         V1 = new Vertex<T>(v1);
         V2 = new Vertex<T>(v2);

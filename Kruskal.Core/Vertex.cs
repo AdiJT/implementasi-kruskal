@@ -8,14 +8,14 @@ public class Vertex<T> : IEquatable<Vertex<T>>
     public T Value { get; set; }
     public Vector2 Position { get; set; } = Vector2.Zero;
     public Vector2 Disposition { get; set; } = Vector2.Zero;
-    public List<(Vertex<T> adj, int weight)> AdjencyList { get; } = [];
+    public List<(Vertex<T> adj, double weight)> AdjencyList { get; } = [];
 
     public Vertex(T value)
     {
         Value = value;
     }
 
-    public Vertex(T value, Vector2 position, Vector2 disposition, List<(Vertex<T> adj, int Weight)> adjencyList)
+    public Vertex(T value, Vector2 position, Vector2 disposition, List<(Vertex<T> adj, double Weight)> adjencyList)
     {
         Value = value;
         Position = position;

@@ -25,6 +25,7 @@
             <TextBox x:Name="TextBox_NumOfDegree" Margin="2, 5" VerticalAlignment="Center" Width="75" Text="5"/>
 
             <Button Click="Btn_Generate_Click" x:Name="Btn_Generate" HorizontalAlignment="Center" Margin="2, 10" Content="Generate Graph" />
+            <Button Click="Btn_Generate_Contoh_Click" x:Name="Btn_Generate_Contoh" HorizontalAlignment="Center" Margin="2, 10" Content="Generate Graph Contoh" />
         </WrapPanel>
         
         <WrapPanel Grid.Row="1" Orientation="Horizontal">
