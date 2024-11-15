@@ -40,9 +40,13 @@
 
         <WrapPanel Grid.Row="2" Orientation="Horizontal">
             <Button Click="Btn_Djikstra_Click" x:Name="Btn_Djikstra" HorizontalAlignment="Center" Margin="2, 10" Content="Djikstra" />
+            <Button Click="Btn_Djikstra2_Click" x:Name="Btn_Djikstra2" HorizontalAlignment="Center" Margin="2, 10" Content="Djikstra2" />
 
             <TextBlock Margin="2, 5" VerticalAlignment="Center">Start</TextBlock>
             <TextBox x:Name="TextBox_Start" Margin="2, 5" VerticalAlignment="Center" Width="75" Text="1"/>
+
+            <TextBlock Margin="2, 5" VerticalAlignment="Center">End</TextBlock>
+            <TextBox x:Name="TextBox_End" Margin="2, 5" VerticalAlignment="Center" Width="75" Text="1"/>
         </WrapPanel>
 
         <ProgressBar x:Name="Progress_Bar" Grid.Row="3" />

@@ -339,6 +339,80 @@ public class Graph<T> where T : IEquatable<T>
 
         return result;
     }
+
+    public (double cost, List<Vertex<T>> path) Djikstra(Vertex<T> start, Vertex<T> end)
+    {
+        if (!_vertices.Contains(start))
+            throw new ArgumentException("start tidak dalam graph");
+
+        if(!_vertices.Contains(end))
+            throw new ArgumentException("start tidak dalam graph");
+
+        start = _vertices.Find(v => v == start)!;
+        end = _vertices.Find(v => v == end)!;
+
+        var startNode = new DjikstraNode(start, 0, null);
+        var isShortestPathFound = false;
+
+        var finalized = new HashSet<DjikstraNode>();
+        var priorityQueue = new MinHeapQueue<DjikstraNode, double>(n => n.Cost);
+
+        priorityQueue.Enqueue(startNode);
+
+        while (priorityQueue.Count > 0)
+        {
+            var node = priorityQueue.Dequeue();
+            finalized.Add(node);
+
+            if(node.Vertex == end)
+            {
+                isShortestPathFound = true;
+                break;
+            }
+
+            foreach (var (adj, weight) in node.Vertex.AdjencyList)
+            {
+                if (finalized.FirstOrDefault(n => n.Vertex == adj) == null)
+                {
+                    var inQueue = priorityQueue.Find(n => n.Vertex == adj);
+
+                    if (inQueue == null)
+                    {
+                        priorityQueue.Enqueue(new(adj, node.Cost + weight, node));
+                    }
+                    else
+                    {
+                        var newCost = node.Cost + weight;
+                        if (newCost < inQueue.Cost)
+                        {
+                            inQueue.Cost = newCost;
+                            inQueue.Parent = node;
+                        }
+                    }
+                }
+            }
+        }
+
+        if(isShortestPathFound)
+        {
+            var endNode = finalized.FirstOrDefault(v => v.Vertex == end)!;
+            var path = new List<Vertex<T>> { endNode.Vertex };
+            var parent = endNode.Parent;
+
+            while(parent != null)
+            {
+                path.Add(parent.Vertex);
+                parent = parent.Parent;
+            }
+
+            path.Reverse();
+            return (endNode.Cost, path);
+        }
+        else
+        {
+            return (double.PositiveInfinity, []);
+        }
+    }
 }
 
 public static class Graph

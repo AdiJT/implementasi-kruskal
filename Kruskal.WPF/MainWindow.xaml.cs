@@ -176,5 +176,47 @@ namespace Kruskal.WPF
 
             AddBitmapToWrapPanel(_graphBmp);
         }
+
+        private async void Btn_Djikstra2_Click(object sender, RoutedEventArgs e)
+        {
+            if (_graph is null || _graphBmp is null) return;
+
+            Progress_Bar.Value = 0;
+            WrapPanel_Result.Children.Clear();
+            IsEnabled = false;
+
+            IProgress<(int, BitmapSource?)> progress = new Progress<(int, BitmapSource?)>(
+                (p) =>
+                {
+                    Progress_Bar.Value += p.Item1;
+                    var bmp = p.Item2;
+
+                    if (bmp is not null)
+                    {
+                        AddBitmapToWrapPanel(bmp);
+                    }
+                }
+            );
+
+            AddBitmapToWrapPanel(_graphBmp);
+
+            var start = TextBox_Start.Text;
+            var end = TextBox_End.Text;
+
+            await Task.Run(() =>
+            {
+                var result = _graph.Djikstra(new(start), new(end));
+
+                    var bmp = _graph.ToBitmap(
+                        _size, _size,
+                        $"Shortest Path dari {start} ke {end} dengan Cost {result.cost}",
+                        (new(end), result.cost, result.path)).ToWpfBitmap();
+
+                progress.Report((100, bmp));
+            });
+
+            Progress_Bar.Value = 0;
+            IsEnabled = true;
+        }
     }
 }
