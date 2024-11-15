@@ -31,13 +31,23 @@
                 }
             </select>
         </div>
-        @if(Model.Path is not null)
-        {
+    </div>
+    @if (Model.Path is not null)
+    {
+        <div class="row">
             <div class="col ml-3">
                 Total Cost : @Model.Path.Value.cost
             </div>
-        }
-    </div>
+            <div class="col ml-3">
+                Jalur : 
+                @for(int i = 0; i < Model.Path.Value.path.Count; i++)
+                {
+                    var p = Model.Path.Value.path[i];
+                    @($"{p.Value.Nama}{(i < Model.Path.Value.path.Count - 1 ? " -> " : "")}")
+                }
+            </div>
+        </div>
+    }
     <div class="row">
         <div class="col my-3">
             <button class="btn btn-primary" type="submit">Djikstra</button>
@@ -47,15 +57,15 @@
 
 <div class="row h-100">
 
-    @if(Model.Origin is not null && Model.Destinations is not null && Model.Path is not null)
+    @if (Model.Origin is not null && Model.Destinations is not null && Model.Path is not null)
     {
         var origin = $"place_id:{Model.Origin.PlaceId}";
 
         var destination = $"place_id:{Model.Destinations.PlaceId}";
 
         var waypoints = Model.Path.Value.path
-            .Where(p => p.Value != Model.Origin && p.Value != Model.Destinations)
-            .Select(p => $"place_id:{p.Value.PlaceId}").ToList();
+        .Where(p => p.Value != Model.Origin && p.Value != Model.Destinations)
+        .Select(p => $"place_id:{p.Value.PlaceId}").ToList();
 
         var waypoint = waypoints.Count > 0 ? $"&waypoints={string.Join("|", waypoints)}" : "";
 
