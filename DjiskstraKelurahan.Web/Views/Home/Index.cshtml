@@ -1,8 +1,70 @@
-﻿@{
+﻿@using DjiskstraKelurahan.Web.Models.Home
+@using DjiskstraKelurahan.Web.Services
+
+@inject IKelurahanService KelurahanService
+
+@model IndexVM
+
+@{
     ViewData["Title"] = "Home Page";
+    var daftarKelurahan = KelurahanService.GetAll();
+    var apiKey = "AIzaSyAYKdBR9cShNCUXAUD0ldqz6zM-Zle1ejQ";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<form asp-action="Index" method="post">
+    <div class="row">
+        <div class="col ml-3">
+            <label asp-for="@Model.Start" class="form-label">Start</label>
+            <select asp-for="@Model.Start" class="form-control">
+                @foreach (var kelurahan in daftarKelurahan)
+                {
+                    <option value="@kelurahan.Nama">@kelurahan.Nama</option>
+                }
+            </select>
+        </div>
+        <div class="col ml-3">
+            <label asp-for="@Model.End" class="form-label">End</label>
+            <select asp-for="@Model.End" class="form-control">
+                @foreach (var kelurahan in daftarKelurahan)
+                {
+                    <option value="@kelurahan.Nama">@kelurahan.Nama</option>
+                }
+            </select>
+        </div>
+        @if(Model.Path is not null)
+        {
+            <div class="col ml-3">
+                Total Cost : @Model.Path.Value.cost
+            </div>
+        }
+    </div>
+    <div class="row">
+        <div class="col my-3">
+            <button class="btn btn-primary" type="submit">Djikstra</button>
+        </div>
+    </div>
+</form>
+
+<div class="row h-100">
+
+    @if(Model.Origin is not null && Model.Destinations is not null && Model.Path is not null)
+    {
+        var origin = $"place_id:{Model.Origin.PlaceId}";
+
+        var destination = $"place_id:{Model.Destinations.PlaceId}";
+
+        var waypoints = Model.Path.Value.path
+            .Where(p => p.Value != Model.Origin && p.Value != Model.Destinations)
+            .Select(p => $"place_id:{p.Value.PlaceId}").ToList();
+
+        var waypoint = waypoints.Count > 0 ? $"&waypoints={string.Join("|", waypoints)}" : "";
+
+        <iframe width="450"
+                height="450"
+                frameborder="0" style="border:0"
+                referrerpolicy="no-referrer-when-downgrade"
+                src="https://www.google.com/maps/embed/v1/directions?key=@(apiKey)&origin=@(origin)&destination=@(destination)@(waypoint)"
+                allowfullscreen>
+        </iframe>
+    }
 </div>
