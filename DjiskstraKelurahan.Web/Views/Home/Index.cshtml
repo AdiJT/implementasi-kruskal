@@ -1,8 +1,4 @@
-﻿@using DjiskstraKelurahan.Web.Configurations
-@using DjiskstraKelurahan.Web.Models.Home
-@using DjiskstraKelurahan.Web.Services
-
-@inject IKelurahanService KelurahanService
+﻿@inject IKelurahanService KelurahanService
 
 @model IndexVM
 
@@ -39,8 +35,8 @@
                 Total Cost : @Model.Path.Value.cost
             </div>
             <div class="col ml-3">
-                Jalur : 
-                @for(int i = 0; i < Model.Path.Value.path.Count; i++)
+                Jalur :
+                @for (int i = 0; i < Model.Path.Value.path.Count; i++)
                 {
                     var p = Model.Path.Value.path[i];
                     @($"{p.Value.Nama}{(i < Model.Path.Value.path.Count - 1 ? " -> " : "")}")
@@ -74,7 +70,42 @@
                 frameborder="0" style="border:0"
                 referrerpolicy="no-referrer-when-downgrade"
                 src="https://www.google.com/maps/embed/v1/directions?key=@(MapsAPIConfiguration.ApiKey)&origin=@(origin)&destination=@(destination)@(waypoint)"
-                allowfullscreen>x
+                allowfullscreen>
         </iframe>
     }
 </div>
+
+<div class="row h-100">
+    <div id="map"></div>
+</div>
+
+@section Scripts {
+    <partial name="_MapsApiPartial" />
+
+    <script type="text/javascript">
+        let map;
+
+        async function initMap() {
+            const pos = { lat: -25.344, lng: 131.031 };
+
+            const { Map } = await google.maps.importLibrary("maps");
+            const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
+
+            // The map, centered at Uluru
+            map = new Map(document.getElementById("map"), {
+                zoom: 4,
+                center: pos,
+                mapId: "DEMO_MAP_ID"
+            });
+
+            // The marker, positioned at Uluru
+            const marker = new AdvancedMarkerElement({
+                map: map,
+                position: pos,
+                title: "Uluru",
+            });
+        }
+
+        initMap();
+    </script>
+}
