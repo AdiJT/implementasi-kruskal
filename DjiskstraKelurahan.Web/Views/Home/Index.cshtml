@@ -1,4 +1,5 @@
-﻿@using DjiskstraKelurahan.Web.Models.Home
+﻿@using DjiskstraKelurahan.Web.Configurations
+@using DjiskstraKelurahan.Web.Models.Home
 @using DjiskstraKelurahan.Web.Services
 
 @inject IKelurahanService KelurahanService
@@ -8,7 +9,6 @@
 @{
     ViewData["Title"] = "Home Page";
     var daftarKelurahan = KelurahanService.GetAll();
-    var apiKey = "AIzaSyAYKdBR9cShNCUXAUD0ldqz6zM-Zle1ejQ";
 }
 
 <form asp-action="Index" method="post">
@@ -73,8 +73,8 @@
                 height="450"
                 frameborder="0" style="border:0"
                 referrerpolicy="no-referrer-when-downgrade"
-                src="https://www.google.com/maps/embed/v1/directions?key=@(apiKey)&origin=@(origin)&destination=@(destination)@(waypoint)"
-                allowfullscreen>
+                src="https://www.google.com/maps/embed/v1/directions?key=@(MapsAPIConfiguration.ApiKey)&origin=@(origin)&destination=@(destination)@(waypoint)"
+                allowfullscreen>x
         </iframe>
     }
 </div>

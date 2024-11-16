@@ -30,7 +30,7 @@ public class KelurahanService : IKelurahanService
         new Kelurahan { Nama = "Fatululi", PlaceId = "ChIJjzjCE7ecViwR7bwPfSphcM4"},
         new Kelurahan { Nama = "Pasir Panjang", PlaceId = "ChIJnUpdrdqdViwRJI9Nop3r4AE"},
         new Kelurahan { Nama = "Kelapa Lima", PlaceId = "ChIJdeTcEzODViwREr6ppM8ODKc"},
-        new Kelurahan { Nama = "Oesapa Barat", PlaceId = "hIJVZqmM_-DViwRapWnGVAMHj0"},
+        new Kelurahan { Nama = "Oesapa Barat", PlaceId = "ChIJVZqmM_-DViwRapWnGVAMHj0"},
         new Kelurahan { Nama = "TDM", PlaceId = "ChIJVVVVVUSDViwRHPL4WnFJ0p0"},
         new Kelurahan { Nama = "Liliba", PlaceId = "ChIJkxmlFKCEViwR-L7ygOmiJjM"},
         new Kelurahan { Nama = "Oesapa", PlaceId = "ChIJU4GuxXeDViwRQ5w05ciUA-I"},
