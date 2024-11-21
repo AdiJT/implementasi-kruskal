@@ -2,5 +2,5 @@
 
 public class MapsAPIConfiguration
 {
-    public const string ApiKey = "AIzaSyAOVYRIgupAurZup5y1PRh8Ismb1A3lLao";
+    public const string ApiKey = "AIzaSyD-4Cs26qgJwEWf8uDQWInDkul3tgxWQWI";
 }

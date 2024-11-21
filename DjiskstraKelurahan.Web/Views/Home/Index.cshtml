@@ -65,13 +65,13 @@
 
         var waypoint = waypoints.Count > 0 ? $"&waypoints={string.Join("|", waypoints)}" : "";
 
-        <iframe width="450"
+        @* <iframe width="450"
                 height="450"
                 frameborder="0" style="border:0"
                 referrerpolicy="no-referrer-when-downgrade"
                 src="https://www.google.com/maps/embed/v1/directions?key=@(MapsAPIConfiguration.ApiKey)&origin=@(origin)&destination=@(destination)@(waypoint)"
                 allowfullscreen>
-        </iframe>
+        </iframe> *@
     }
 </div>
 
