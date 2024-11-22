@@ -7,72 +7,40 @@
     var daftarKelurahan = KelurahanService.GetAll();
 }
 
-<form asp-action="Index" method="post">
-    <div class="row">
-        <div class="col ml-3">
-            <label asp-for="@Model.Start" class="form-label">Start</label>
-            <select asp-for="@Model.Start" class="form-control">
-                @foreach (var kelurahan in daftarKelurahan)
-                {
-                    <option value="@kelurahan.Nama">@kelurahan.Nama</option>
-                }
-            </select>
-        </div>
-        <div class="col ml-3">
-            <label asp-for="@Model.End" class="form-label">End</label>
-            <select asp-for="@Model.End" class="form-control">
-                @foreach (var kelurahan in daftarKelurahan)
-                {
-                    <option value="@kelurahan.Nama">@kelurahan.Nama</option>
-                }
-            </select>
-        </div>
+<div class="row">
+    <div class="col ml-3">
+        <label class="form-label">Start</label>
+        <select id="start" class="form-control">
+            @foreach (var kelurahan in daftarKelurahan)
+            {
+                <option value="@kelurahan.Nama">@kelurahan.Nama</option>
+            }
+        </select>
     </div>
-    @if (Model.Path is not null)
-    {
-        <div class="row">
-            <div class="col ml-3">
-                Total Cost : @Model.Path.Value.cost
-            </div>
-            <div class="col ml-3">
-                Jalur :
-                @for (int i = 0; i < Model.Path.Value.path.Count; i++)
-                {
-                    var p = Model.Path.Value.path[i];
-                    @($"{p.Value.Nama}{(i < Model.Path.Value.path.Count - 1 ? " -> " : "")}")
-                }
-            </div>
-        </div>
-    }
-    <div class="row">
-        <div class="col my-3">
-            <button class="btn btn-primary" type="submit">Djikstra</button>
-        </div>
+    <div class="col ml-3">
+        <label class="form-label">End</label>
+        <select id="end" class="form-control">
+            @foreach (var kelurahan in daftarKelurahan)
+            {
+                <option value="@kelurahan.Nama">@kelurahan.Nama</option>
+            }
+        </select>
     </div>
-</form>
+</div>
 
-<div class="row h-100">
+<div class="row">
+    <div class="col ml-3">
+        Total Cost : <span id="cost"></span>
+    </div>
+    <div class="col ml-3">
+        Jalur : <span id="path"></span>
+    </div>
+</div>
 
-    @if (Model.Origin is not null && Model.Destinations is not null && Model.Path is not null)
-    {
-        var origin = $"place_id:{Model.Origin.PlaceId}";
-
-        var destination = $"place_id:{Model.Destinations.PlaceId}";
-
-        var waypoints = Model.Path.Value.path
-        .Where(p => p.Value != Model.Origin && p.Value != Model.Destinations)
-        .Select(p => $"place_id:{p.Value.PlaceId}").ToList();
-
-        var waypoint = waypoints.Count > 0 ? $"&waypoints={string.Join("|", waypoints)}" : "";
-
-        @* <iframe width="450"
-    height="450"
-    frameborder="0" style="border:0"
-    referrerpolicy="no-referrer-when-downgrade"
-    src="https://www.google.com/maps/embed/v1/directions?key=@(MapsAPIConfiguration.ApiKey)&origin=@(origin)&destination=@(destination)@(waypoint)"
-    allowfullscreen>
-    </iframe> *@
-    }
+<div class="row">
+    <div class="col my-3">
+        <button class="btn btn-primary" id="djikstra">Djikstra</button>
+    </div>
 </div>
 
 <style>
@@ -81,23 +49,35 @@
         height: 400px;
     }
 </style>
+
 <div id="map"></div>
 
 @section Scripts {
     <partial name="_MapsApiPartial" />
 
     <script type="text/javascript">
+        const selectStart = $("select#start");
+        const selectEnd = $("select#end");
+        const buttonDjikstra = $("button#djikstra");
+        const spanCost = $("span#cost");
+        const spanPath = $("span#path");
         let map;
 
-        
         async function initMap() {
             let daftarKelurahan;
+            let daftarEdges;
 
             const response = await fetch("/kelurahans");
             if (response.ok) {
                 daftarKelurahan = await response.json();
 
                 console.log(daftarKelurahan);
+            }
+
+            const responseEdge = await fetch("/kelurahans/edges");
+            if (responseEdge.ok) {
+                daftarEdges = await responseEdge.json();
+                console.log(daftarEdges);
             }
 
             const pos = { lat: - 10.17696822001329, lng: 123.60338374889992 };
@@ -115,7 +95,7 @@
             // The marker, positioned at Uluru
             const markers = [];
 
-            for(let kelurahan of daftarKelurahan) {
+            for (let kelurahan of daftarKelurahan) {
                 const contentString =
                     '<div id="content">' +
                     '<div id="siteNotice">' +
@@ -149,6 +129,74 @@
 
                 markers.push(m);
             }
+
+            const polyLines = [];
+            for (let edge of daftarEdges) {
+                const line = [
+                    { lat: edge.v1.value.koordinat.x, lng: edge.v1.value.koordinat.y },
+                    { lat: edge.v2.value.koordinat.x, lng: edge.v2.value.koordinat.y }
+                ];
+
+                const p = new google.maps.Polyline({
+                    path: line,
+                });
+                p.setMap(map);
+                polyLines.push(p);
+            }
+
+            buttonDjikstra.on('click', async function() {
+                const start = selectStart.val();
+                const end = selectEnd.val();
+
+                const request = { Start: start, End: end };
+                const responsePath = await fetch("/kelurahans/path", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(request)
+                });
+
+                if (responsePath.ok) {
+                    const result = await responsePath.json();
+                    
+                    console.log(result);
+
+                    for (let line of polyLines) {
+                        line.setMap(null);
+                    }
+                    
+                    polyLines.length = 0;
+                    let pathString = "";
+
+                    for (let i = 1; i < result.path.length; i++) {
+                        const kel1 = result.path[i - 1];
+                        const kel2 = result.path[i];
+
+                        const line = [
+                            { lat: kel1.value.koordinat.x, lng: kel1.value.koordinat.y },
+                            { lat: kel2.value.koordinat.x, lng: kel2.value.koordinat.y }
+                        ];
+
+                        const p = new google.maps.Polyline({
+                            path: line,
+                        });
+
+                        p.setMap(map);
+                        polyLines.push(p);
+
+                        pathString += `${kel1.value.nama}`;
+                        if (i != result.path.length - 1) {
+                            pathString += " - ";
+                        } else {
+                            pathString += ` - ${kel2.value.nama}`;
+                        }
+                    }
+
+                    spanCost.html(result.cost);
+                    spanPath.html(pathString);
+                }
+            });
         }
 
         initMap();
