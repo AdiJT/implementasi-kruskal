@@ -155,6 +155,74 @@ public class KelurahanService : IKelurahanService
                 (GetByName("Oesapa")!, GetByName("Lasiana")!, 2.6),
 
                 (GetByName("Lasiana")!, GetByName("Penfui")!, 5.2),
+
+                (GetByName("Naioni")!, GetByName("Manulai 2")!, 7.5),
+                (GetByName("Naioni")!, GetByName("Fatukoa")!, 4.2),
+
+                (GetByName("Fatukoa")!, GetByName("Sikumana")!, 4.1),
+
+                (GetByName("Sikumana")!, GetByName("Oepura")!, 1.6),
+                (GetByName("Sikumana")!, GetByName("Bello")!, 2.9),
+
+                (GetByName("Bello")!, GetByName("Kolhua")!, 3.3),
+
+                (GetByName("Oepura")!, GetByName("Maulafa")!, 2.2),
+                (GetByName("Oepura")!, GetByName("Naikolan")!, 2.7),
+                (GetByName("Oepura")!, GetByName("Oebufu")!, 2.2),
+
+                (GetByName("Mantasi")!, GetByName("Airmata")!, 0.75),
+                (GetByName("Mantasi")!, GetByName("Manutapen")!, 0.7),
+
+                (GetByName("Fatufeto")!, GetByName("Nunhila")!, 0.75),
+                (GetByName("Fatufeto")!, GetByName("Lai Lai Bisi Kopan")!, 0.24),
+                (GetByName("Fatufeto")!, GetByName("Airmata")!, 0.45),
+                (GetByName("Fatufeto")!, GetByName("Manutapen")!, 2.0),
+
+                (GetByName("Nunhila")!, GetByName("Nunbaun Delha")!, 0.9),
+
+                (GetByName("Airmata")!, GetByName("Lai Lai Bisi Kopan")!, 0.5),
+
+                (GetByName("Lai Lai Bisi Kopan")!, GetByName("Solor")!, 0.8),
+                (GetByName("Lai Lai Bisi Kopan")!, GetByName("Bonipoi")!, 0.9),
+
+                (GetByName("Fontein")!, GetByName("Oetete")!, 0.7),
+                (GetByName("Fontein")!, GetByName("Merdeka")!, 1.2),
+                (GetByName("Fontein")!, GetByName("Bonipoi")!, 0.8),
+                (GetByName("Fontein")!, GetByName("Nunleu")!, 1.3),
+
+                (GetByName("Kolhua")!, GetByName("Maulafa")!, 2.2),
+                (GetByName("Kolhua")!, GetByName("Naimata")!, 4.7),
+                (GetByName("Kolhua")!, GetByName("Oepura")!, 3.2),
+
+                (GetByName("Maulafa")!, GetByName("Oebufu")!, 1.2),
+                (GetByName("Maulafa")!, GetByName("Naimata")!, 6.8),
+                (GetByName("Maulafa")!, GetByName("Oepura")!, 2.2),
+
+                (GetByName("Naimata")!, GetByName("Liliba")!, 1.5),
+                (GetByName("Naimata")!, GetByName("Penfui")!, 2.6),
+
+                (GetByName("Solor")!, GetByName("Tode Kisar")!, 0.5),
+                (GetByName("Solor")!, GetByName("Bonipoi")!, 1.0),
+                (GetByName("Solor")!, GetByName("Merdeka")!, 1.1),
+
+                (GetByName("Tode Kisar")!, GetByName("Fatubesi")!, 1.4),
+                (GetByName("Tode Kisar")!, GetByName("Merdeka")!, 1.0),
+
+                (GetByName("Bonipoi")!, GetByName("Merdeka")!, 1.1),
+
+                (GetByName("Merdeka")!, GetByName("Oeba")!, 0.8),
+                (GetByName("Merdeka")!, GetByName("Oetete")!, 0.4),
+                (GetByName("Merdeka")!, GetByName("Fatubesi")!, 1.5),
+
+                (GetByName("Oeba")!, GetByName("Fatubesi")!, 0.85),
+                (GetByName("Oeba")!, GetByName("Oetete")!, 1.2),
+                (GetByName("Oeba")!, GetByName("Pasir Panjang")!, 1.6),
+
+                (GetByName("Fatubesi")!, GetByName("Pasir Panjang")!, 1.2),
+
+                (GetByName("Nefonaek")!, GetByName("Pasir Panjang")!, 0.4),
+                (GetByName("Nefonaek")!, GetByName("Fatululi")!, 1.2),
+                (GetByName("Nefonaek")!, GetByName("Oebobo")!, 2.4),
             ]
         );
 }
