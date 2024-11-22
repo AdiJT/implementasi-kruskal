@@ -5,7 +5,7 @@ namespace DjiskstraKelurahan.Web.Models;
 public class Kelurahan : IEquatable<Kelurahan>
 {
     public required string Nama { get; set; }
-    public required string PlaceId { get; set; }
+    public string PlaceId { get; set; }
     public required PointF Koordinat { get; set; }
 
     public bool Equals(Kelurahan? other) => other is not null && other.Nama == Nama;
