@@ -1,3 +1,4 @@
+using DjiskstraKelurahan.Web.Models;
 using DjiskstraKelurahan.Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,6 +24,20 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();
+
+app.MapGet("/kelurahans", (IKelurahanService kelurahanService) => 
+{
+    var daftarKelurahan = kelurahanService.GetAll();
+    return Results.Json<List<Kelurahan>>(daftarKelurahan);
+});
+
+app.MapGet("/kelurahans/{nama:string}", (IKelurahanService kelurahanService, string nama) =>
+{
+    var kelurahan = kelurahanService.GetByName(nama);
+    if(kelurahan is null) return Results.NotFound();
+
+    return Results.Json<Kelurahan>(kelurahan);
+});
 
 app.MapControllerRoute(
     name: "default",

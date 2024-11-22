@@ -89,6 +89,13 @@
     <script type="text/javascript">
         let map;
 
+        let daftarKelurahan;
+
+        const response = await fetch("/kelurahans");
+        if(response.ok) {
+            daftarKelurahan = await response.json();
+        }
+
         async function initMap() {
             const pos = { lat: -25.344, lng: 131.031 };
 

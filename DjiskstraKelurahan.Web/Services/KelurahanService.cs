@@ -1,5 +1,6 @@
 ﻿using DjiskstraKelurahan.Web.Models;
 using Kruskal.Core;
+using System.Drawing;
 
 namespace DjiskstraKelurahan.Web.Services;
 
@@ -7,11 +8,11 @@ public class KelurahanService : IKelurahanService
 {
     private readonly List<Kelurahan> _daftarKelurahan =
     [
-        new Kelurahan { Nama = "Alak", PlaceId = "ChIJ6TBceuSbViwR_aQKEo_gGPk"},
-        new Kelurahan { Nama = "Namosain", PlaceId = "ChIJScJX0HGcViwRTLrJO6fFyEM"},
-        new Kelurahan { Nama = "Manulai 2", PlaceId = "ChIJw-f39lubViwRVuk37OLtIi0"},
-        new Kelurahan { Nama = "Penkase Oeleta", PlaceId = "ChIJWwrZWYmbViwRf8OjN89zb7Q"},
-        new Kelurahan { Nama = "Nunbaun Sabu", PlaceId = "ChIJ3ZZ5j3udViwR83LQn87c7eU"},
+        new Kelurahan { Nama = "Alak", PlaceId = "ChIJ6TBceuSbViwR_aQKEo_gGPk", Koordinat = new PointF(-10.197320007596058, 123.53452923974321)},
+        new Kelurahan { Nama = "Namosain", PlaceId = "ChIJScJX0HGcViwRTLrJO6fFyEM", Koordinat = new PointF(-10.173405186457442, 123.55845696004484)},
+        new Kelurahan { Nama = "Manulai 2", PlaceId = "ChIJw-f39lubViwRVuk37OLtIi0", Koordinat = new PointF(-10.217059685431211, 123.57438838152984)},
+        new Kelurahan { Nama = "Penkase Oeleta", PlaceId = "ChIJWwrZWYmbViwRf8OjN89zb7Q", Koordinat = new PointF(-10.191157881753961, 123.55869985269388)},
+        new Kelurahan { Nama = "Nunbaun Sabu", PlaceId = "ChIJ3ZZ5j3udViwR83LQn87c7eU", Koordinat = new PointF(-10.177644969745893, 123.56617881036473)},
         new Kelurahan { Nama = "Nunbaun Delha", PlaceId = "ChIJNZv0Q5adViwRsPJ8t-g56Vw"},
         new Kelurahan { Nama = "Manutapen", PlaceId = "ChIJ03S29YOcViwRwUR5ld8qfNg"},
         new Kelurahan { Nama = "Bakunase", PlaceId = "ChIJdeNE_2SbViwR_2cANxifdxQ"},
