@@ -146,10 +146,10 @@
 
             buttonDjikstra.on('click', async function() {
                 const start = selectStart.val();
-                const end = selectEnd.val();
+                const daftarKelurahan = ["Bonipoi", "Manulai 2", "Penfui", "Namosain"];
 
-                const request = { Start: start, End: end };
-                const responsePath = await fetch("/kelurahans/path", {
+                const request = { Start: start, DaftarKelurahan: daftarKelurahan };
+                const responsePath = await fetch("/kelurahans/final", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
