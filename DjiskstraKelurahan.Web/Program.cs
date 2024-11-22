@@ -31,7 +31,7 @@ app.MapGet("/kelurahans", (IKelurahanService kelurahanService) =>
     return Results.Json<List<Kelurahan>>(daftarKelurahan);
 });
 
-app.MapGet("/kelurahans/{nama:string}", (IKelurahanService kelurahanService, string nama) =>
+app.MapGet("/kelurahans/{nama}", (IKelurahanService kelurahanService, string nama) =>
 {
     var kelurahan = kelurahanService.GetByName(nama);
     if(kelurahan is null) return Results.NotFound();
