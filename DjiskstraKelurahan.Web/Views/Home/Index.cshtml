@@ -7,19 +7,20 @@
     var daftarKelurahan = KelurahanService.GetAll();
 }
 
+<div class="card"></div>
 <div class="row">
-    <div class="col ml-3">
+    <div class="col pr-0">
         <label class="form-label">Start</label>
-        <select id="start" class="form-control">
+        <select id="start" class="form-control select2">
             @foreach (var kelurahan in daftarKelurahan)
             {
                 <option value="@kelurahan.Nama">@kelurahan.Nama</option>
             }
         </select>
     </div>
-    <div class="col ml-3">
+    <div class="col pr-0">
         <label class="form-label">End</label>
-        <select id="end" class="form-control">
+        <select id="end" class="form-control select2" multiple>
             @foreach (var kelurahan in daftarKelurahan)
             {
                 <option value="@kelurahan.Nama">@kelurahan.Nama</option>
@@ -42,6 +43,8 @@
         <button class="btn btn-primary" id="djikstra">Djikstra</button>
     </div>
 </div>
+
+<hr >
 
 <style>
     #map {
@@ -199,6 +202,21 @@
             });
         }
 
-        initMap();
+        initMap();        
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('.select2').select2({
+                 // Tombol untuk menghapus pilihan
+            });
+        });
+        $(document).ready(function () {
+            // Hanya untuk elemen Select2 dengan atribut multiple
+            $('select.select2[multiple]').select2({
+                closeOnSelect: false,
+                allowClear: true
+            });
+        });
+
     </script>
 }
