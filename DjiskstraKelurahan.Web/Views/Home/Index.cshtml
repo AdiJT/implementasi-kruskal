@@ -103,7 +103,7 @@
                     '<div id="content">' +
                     '<div id="siteNotice">' +
                     "</div>" +
-                    '<h1 id="firstHeading" class="firstHeading">Kantor Lurah ' + kelurahan.nama + '</h1>' +
+                    '<h4 id="firstHeading" class="firstHeading">Kantor Lurah ' + kelurahan.nama + '</h4>' +
                     '<div id="bodyContent">' +
                     "</div>" +
                     "</div>";
@@ -213,6 +213,7 @@
         $(document).ready(function () {
             // Hanya untuk elemen Select2 dengan atribut multiple
             $('select.select2[multiple]').select2({
+                placeholder: " Pilih Kelurahan...",
                 closeOnSelect: false,
                 allowClear: true
             });
