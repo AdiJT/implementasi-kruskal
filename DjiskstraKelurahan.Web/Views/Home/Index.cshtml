@@ -149,7 +149,7 @@
 
             buttonDjikstra.on('click', async function() {
                 const start = selectStart.val();
-                const daftarKelurahan = ["Bonipoi", "Manulai 2", "Penfui", "Namosain"];
+                const daftarKelurahan = selectEnd.val();
 
                 const request = { Start: start, DaftarKelurahan: daftarKelurahan };
                 const responsePath = await fetch("/kelurahans/final", {
