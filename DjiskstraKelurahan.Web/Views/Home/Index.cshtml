@@ -228,7 +228,11 @@
                             }
                         });
 
-                        pathString += `${kel1.value.nama}`;
+                        if (daftarKelurahan.indexOf(kel1.value.nama) == -1) { 
+                            pathString += `${kel1.value.nama}`;
+                        } else {
+                            pathString += `<b>${kel1.value.nama}</b>`;
+                        }
                         if (i != result.path.length - 1) {
                             pathString += " - ";
                         } else {
