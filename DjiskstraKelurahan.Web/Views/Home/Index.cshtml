@@ -74,14 +74,11 @@
             const response = await fetch("/kelurahans");
             if (response.ok) {
                 daftarKelurahan = await response.json();
-
-                console.log(daftarKelurahan);
             }
 
             const responseEdge = await fetch("/kelurahans/edges");
             if (responseEdge.ok) {
                 daftarEdges = await responseEdge.json();
-                console.log(daftarEdges);
             }
 
             const pos = { lat: - 10.17696822001329, lng: 123.60338374889992 };
@@ -93,7 +90,7 @@
             map = new Map(document.getElementById("map"), {
                 zoom: 13,
                 center: pos,
-                mapId: "3e8984c4ea81cbad "
+                mapId: "3e8984c4ea81cbad"
             });
             
             featureLayer = map.getFeatureLayer("LOCALITY");
@@ -105,11 +102,10 @@
                 fillOpacity: 0.5,
             };
             featureLayer.style = (options) => {
-                if (options.feature.placeId == "ChIJY3GzYGebViwRMgWSwPwLAyY") {
+                if (options.feature.placeId == "ChIJB4xHF_qaViwRSOL6DQb0LMc") {
                     return featureStyleOptions;
                 }
             };
-
 
             const directionsService = new google.maps.DirectionsService();
 
@@ -193,8 +189,6 @@
 
                 if (responsePath.ok) {
                     const result = await responsePath.json();
-                    
-                    console.log(result);
 
                     for (let d of directionsRenderers) {
                         d.setMap(null);
