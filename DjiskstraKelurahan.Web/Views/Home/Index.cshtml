@@ -167,7 +167,11 @@
 
                 directionsService.route(request, function (result, status) {
                     if (status == 'OK') {
-                        const directionsRenderer = new google.maps.DirectionsRenderer({ markerOptions: {visible:false}});
+                        const directionsRenderer = new google.maps.DirectionsRenderer({ 
+                            markerOptions: { visible: false }, 
+                            polylineOptions: { strokeColor: "#FF0000"} 
+                        });
+
                         directionsRenderer.setMap(map);
                         directionsRenderer.setDirections(result);
                         directionsRenderers.push(directionsRenderer);
