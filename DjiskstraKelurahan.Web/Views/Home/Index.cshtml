@@ -136,19 +136,12 @@
                 markers.push(m);
             }
 
-            const polyLines = [];
             const directionsRenderers = [];
             for (let edge of daftarEdges) {
                 const line = [
                     { lat: edge.v1.value.koordinat.x, lng: edge.v1.value.koordinat.y },
                     { lat: edge.v2.value.koordinat.x, lng: edge.v2.value.koordinat.y }
                 ];
-
-                // const p = new google.maps.Polyline({
-                //     path: line,
-                // });
-                // p.setMap(map);
-                // polyLines.push(p);
 
                 const request = {
                     origin: line[0],
@@ -159,7 +152,7 @@
 
                 directionsService.route(request, function (result, status) {
                     if (status == 'OK') {
-                        const directionsRenderer = new google.maps.DirectionsRenderer({ markerOptions: {visible:false} });
+                        const directionsRenderer = new google.maps.DirectionsRenderer({ markerOptions: {visible:false}});
                         directionsRenderer.setMap(map);
                         directionsRenderer.setDirections(result);
                         directionsRenderers.push(directionsRenderer);
