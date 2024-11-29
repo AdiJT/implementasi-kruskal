@@ -233,10 +233,15 @@
                         } else {
                             pathString += `<b>${kel1.value.nama}</b>`;
                         }
+
                         if (i != result.path.length - 1) {
                             pathString += " - ";
                         } else {
-                            pathString += ` - ${kel2.value.nama}`;
+                            if (daftarKelurahan.indexOf(kel2.value.nama) == -1) {
+                                pathString += `${kel2.value.nama}`;
+                            } else {
+                                pathString += `<b>${kel2.value.nama}</b>`;
+                            }
                         }
                     }
 
