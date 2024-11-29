@@ -65,7 +65,7 @@
         const spanCost = $("span#cost");
         const spanPath = $("span#path");
         let map;
-        let localityLayer;
+        let featureLayer;
 
         async function initMap() {
             let daftarKelurahan;
@@ -92,7 +92,7 @@
                 center: pos,
                 mapId: "3e8984c4ea81cbad"
             });
-            
+
             featureLayer = map.getFeatureLayer("LOCALITY");
             const featureStyleOptions = {
                 strokeColor: "#810FCB",
@@ -102,9 +102,9 @@
                 fillOpacity: 0.5,
             };
             featureLayer.style = (options) => {
-                if (options.feature.placeId == "ChIJB4xHF_qaViwRSOL6DQb0LMc") {
+                // if (options.feature.placeId == "ChIJ988Iq3OcViwRmWEaR0N96Qw") {
                     return featureStyleOptions;
-                }
+                // }
             };
 
             const directionsService = new google.maps.DirectionsService();
@@ -164,7 +164,8 @@
                 directionsService.route(request, function (result, status) {
                     if (status == 'OK') {
                         const directionsRenderer = new google.maps.DirectionsRenderer({ 
-                            markerOptions: { visible: false }
+                            markerOptions: { visible: false },
+                            preserveViewport: true
                         });
 
                         directionsRenderer.setMap(map);
@@ -215,7 +216,10 @@
 
                         directionsService.route(request, function (result, status) {
                             if (status == 'OK') {
-                                const directionsRenderer = new google.maps.DirectionsRenderer({ markerOptions: { visible: false } });
+                                const directionsRenderer = new google.maps.DirectionsRenderer({
+                                    markerOptions: { visible: false },
+                                    preserveViewport: true
+                                });
                                 directionsRenderer.setMap(map);
                                 directionsRenderer.setDirections(result);
                                 directionsRenderers.push(directionsRenderer);
