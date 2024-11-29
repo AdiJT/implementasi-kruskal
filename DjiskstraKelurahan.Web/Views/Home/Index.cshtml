@@ -168,8 +168,7 @@
                 directionsService.route(request, function (result, status) {
                     if (status == 'OK') {
                         const directionsRenderer = new google.maps.DirectionsRenderer({ 
-                            markerOptions: { visible: false }, 
-                            polylineOptions: { strokeColor: "#FF0000"} 
+                            markerOptions: { visible: false }
                         });
 
                         directionsRenderer.setMap(map);
