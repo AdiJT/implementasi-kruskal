@@ -65,6 +65,7 @@
         const spanCost = $("span#cost");
         const spanPath = $("span#path");
         let map;
+        let localityLayer;
 
         async function initMap() {
             let daftarKelurahan;
@@ -92,8 +93,10 @@
             map = new Map(document.getElementById("map"), {
                 zoom: 13,
                 center: pos,
-                mapId: "DEMO_MAP_ID"
+                mapId: "3e8984c4ea81cbad "
             });
+
+            const directionsService = new google.maps.DirectionsService();
 
             // The marker, positioned at Uluru
             const markers = [];
@@ -134,17 +137,34 @@
             }
 
             const polyLines = [];
+            const directionsRenderers = [];
             for (let edge of daftarEdges) {
                 const line = [
                     { lat: edge.v1.value.koordinat.x, lng: edge.v1.value.koordinat.y },
                     { lat: edge.v2.value.koordinat.x, lng: edge.v2.value.koordinat.y }
                 ];
 
-                const p = new google.maps.Polyline({
-                    path: line,
+                // const p = new google.maps.Polyline({
+                //     path: line,
+                // });
+                // p.setMap(map);
+                // polyLines.push(p);
+
+                const request = {
+                    origin: line[0],
+                    destination: line[1],
+                    travelMode: 'DRIVING',
+                    unitSystem: google.maps.UnitSystem.METRIC
+                };
+
+                directionsService.route(request, function (result, status) {
+                    if (status == 'OK') {
+                        const directionsRenderer = new google.maps.DirectionsRenderer({ markerOptions: {visible:false} });
+                        directionsRenderer.setMap(map);
+                        directionsRenderer.setDirections(result);
+                        directionsRenderers.push(directionsRenderer);
+                    }
                 });
-                p.setMap(map);
-                polyLines.push(p);
             }
 
             buttonDjikstra.on('click', async function() {
@@ -165,11 +185,11 @@
                     
                     console.log(result);
 
-                    for (let line of polyLines) {
-                        line.setMap(null);
+                    for (let d of directionsRenderers) {
+                        d.setMap(null);
                     }
                     
-                    polyLines.length = 0;
+                    directionsRenderers.length = 0;
                     let pathString = "";
 
                     for (let i = 1; i < result.path.length; i++) {
@@ -181,12 +201,21 @@
                             { lat: kel2.value.koordinat.x, lng: kel2.value.koordinat.y }
                         ];
 
-                        const p = new google.maps.Polyline({
-                            path: line,
-                        });
+                        const request = {
+                            origin: line[0],
+                            destination: line[1],
+                            travelMode: 'DRIVING',
+                            unitSystem: google.maps.UnitSystem.METRIC
+                        };
 
-                        p.setMap(map);
-                        polyLines.push(p);
+                        directionsService.route(request, function (result, status) {
+                            if (status == 'OK') {
+                                const directionsRenderer = new google.maps.DirectionsRenderer({ markerOptions: { visible: false } });
+                                directionsRenderer.setMap(map);
+                                directionsRenderer.setDirections(result);
+                                directionsRenderers.push(directionsRenderer);
+                            }
+                        });
 
                         pathString += `${kel1.value.nama}`;
                         if (i != result.path.length - 1) {
