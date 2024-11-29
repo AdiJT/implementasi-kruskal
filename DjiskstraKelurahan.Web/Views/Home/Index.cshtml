@@ -95,6 +95,21 @@
                 center: pos,
                 mapId: "3e8984c4ea81cbad "
             });
+            
+            featureLayer = map.getFeatureLayer("LOCALITY");
+            const featureStyleOptions = {
+                strokeColor: "#810FCB",
+                strokeOpacity: 1.0,
+                strokeWeight: 3.0,
+                fillColor: "#810FCB",
+                fillOpacity: 0.5,
+            };
+            featureLayer.style = (options) => {
+                if (options.feature.placeId == "ChIJY3GzYGebViwRMgWSwPwLAyY") {
+                    return featureStyleOptions;
+                }
+            };
+
 
             const directionsService = new google.maps.DirectionsService();
 
