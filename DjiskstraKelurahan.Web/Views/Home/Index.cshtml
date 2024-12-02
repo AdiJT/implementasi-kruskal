@@ -10,7 +10,7 @@
 <div class="main-content">
     <div class="row">
         <div class="col-sm-12 col-md-6 pr-0">
-            <label class="form-label">Start</label>
+            <label class="form-label">Titik Awal</label>
             <select id="start" class="form-control select2">
                 @foreach (var kelurahan in daftarKelurahan)
                 {
@@ -19,7 +19,7 @@
             </select>
         </div>
         <div class="col-sm-12 col-md-6 pr-0">
-            <label class="form-label">End</label>
+            <label class="form-label">Titik Akhir</label>
             <select id="end" class="form-control select2" multiple>
                 @foreach (var kelurahan in daftarKelurahan)
                 {
@@ -31,7 +31,7 @@
 
     <div class="row">
         <div class="col-sm-12 col-md-6 mt-3">
-            Total Cost : <span id="cost"></span>
+            Total Cost : <span id="cost"></span><span> Km</span>
         </div>
         <div class="col-sm-12 col-md-6 mt-3">
             Jalur : <span id="path"></span>
