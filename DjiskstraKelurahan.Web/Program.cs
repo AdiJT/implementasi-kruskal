@@ -86,6 +86,8 @@ app.MapPost("/kelurahans/final", (IKelurahanService kelurahanService, FinalReque
     var startVertex = graph.Vertices.FirstOrDefault(v => v.Value == start)!;
     var daftarKelurahanVertex = daftarKelurahan.Select(k => graph.Vertices.FirstOrDefault(v => v.Value == k)!).ToList();
 
+    daftarKelurahanVertex.Remove(startVertex);
+
     var path = new List<Vertex<Kelurahan>>() { startVertex };
     var cost = 0d;
 
