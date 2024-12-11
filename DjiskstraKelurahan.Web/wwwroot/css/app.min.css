@@ -6062,7 +6062,7 @@ a.close.disabled {
 
 .modal-dialog {
     position: relative;
-    width: auto;
+    width: 100%;
     margin: .5rem;
     pointer-events: none
 }
@@ -6249,7 +6249,7 @@ a.close.disabled {
 
 @media(min-width: 576px) {
     .modal-dialog {
-        max-width:500px;
+        max-width:300px;
         margin: 1.75rem auto
     }
 
