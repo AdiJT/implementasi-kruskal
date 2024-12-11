@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - DjiskstraKelurahan.Web</title>
+    <title>@ViewData["Title"] - DijkstraKelurahan.Web</title>
     @* <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" /> *@
     @* <link rel="stylesheet" href="~/DjiskstraKelurahan.Web.styles.css" asp-append-version="true" /> *@
     @* <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/css/select2.min.css" rel="stylesheet" /> *@
@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="~/lib/select2/dist/css/select2.min.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/components.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
 </head>
 <body>
@@ -23,7 +24,7 @@
                     <span class="navbar-toggler-icon"></span>
                 </button> *@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-end">
-                    <ul class="navbar-nav flex-grow-1 justify-content-end mr-5">
+                    <ul class="navbar-nav flex-grow-1 justify-content-end mr-5">                        
                         @* <li class="nav-item mr-3">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
@@ -38,12 +39,58 @@
     <div class="container p-1">
         <main role="main" class="pb-3">
             @RenderBody()
-        </main>
+        </main>        
+    </div>
+    <!-- Vertically Center -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
+         aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalCenterTitle">Nama Anggota</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center">
+                        <h6 class="mb-0">Adi Juanito Taklal</h6>
+                        <p>2206080051</p>
+                        <h6 class="mb-0">Adrian Teva Tetus Nau</h6>
+                        <p>2206080042</p>
+                        <h6 class="mb-0">Albert Berliano Tapatab</h6>
+                        <p>2206080095</p>
+                        <h6 class="mb-0">Aldy Verdynand Baria</h6>
+                        <p>2206080024</p>
+                        <h6 class="mb-0">Annika Laurensia Hipir</h6>
+                        <p>2206080050</p>
+                        <h6 class="mb-0">Helena Alycia Liu</h6>
+                        <p>2206080031</p>
+                        <h6 class="mb-0">Margaritha Theresia Lubalu</h6>
+                        <p>2206080091</p>
+                        <h6 class="mb-0">Oswaldus Putra Fernando</h6>
+                        <p>2206080016</p>
+                        <h6 class="mb-0">Patricia Margareth Monika</h6>
+                        <p>2206080030</p>
+                        <h6 class="mb-0">Taufiq Kusuma</h6>
+                        <p>2206080025</p>
+                        <h6 class="mb-0">Willem Yufri Seran</h6>
+                        <p>2206080099</p>
+                        <h6 class="mb-0">William Ivander Lie</h6>
+                        <p>2206080062</p>
+                    </div>                    
+                </div>
+               @*  <div class="modal-footer bg-whitesmoke br">
+                    <button type="button" class="btn btn-primary">Save</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div> *@
+            </div>
+        </div>
     </div>
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2024 - DjiskstraKelurahan.Web - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2024 - Kelompok Dijkstra - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
 @*     <script src="~/lib/jquery/dist/jquery.min.js"></script>
